@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Carbon\Carbon;
@@ -74,5 +75,12 @@ class Project extends Model
     public function reminders()
     {
         return $this->hasMany(ReminderProject::class);
+    }
+
+    // app/Models/Project.php
+    public function members()
+    {
+        return $this->belongsToMany(User::class, 'project_teams', 'project_id', 'user_id')
+            ->where('users.role', 'member');
     }
 }
