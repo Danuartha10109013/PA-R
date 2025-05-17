@@ -33,7 +33,8 @@ class Kernel extends ConsoleKernel
 
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('project:send-reminder')->everyMinute();
+        $schedule->command('project:send-reminder')
+            ->everyMinute();
     }
 
     protected $commands = [

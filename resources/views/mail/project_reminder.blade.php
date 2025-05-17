@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project Reminder: {{ $reminder->project->name }}</title>
+    <title>Reminder Deadline Proyek</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
 
@@ -16,7 +16,7 @@
             line-height: 1.6;
         }
 
-        .email-wrapper {
+        .email-container {
             max-width: 600px;
             margin: 20px auto;
             background: #ffffff;
@@ -91,6 +91,12 @@
             font-weight: 500;
             margin: 20px 0;
             text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
         }
 
         .email-footer {
@@ -109,55 +115,64 @@
             margin: 0 10px;
             color: #667eea;
             text-decoration: none;
+            font-size: 16px;
         }
 
         .highlight {
             color: #667eea;
             font-weight: 500;
         }
+
+        .urgency-badge {
+            background-color: #ff4757;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
     </style>
 </head>
 <body>
-    <div class="email-wrapper">
+    <div class="email-container">
         <div class="email-header">
             <div class="email-logo">Task Manager</div>
-            <h1 class="email-title">Project Reminder</h1>
+            <h1 class="email-title">⏰ Deadline Mendekat!</h1>
         </div>
 
         <div class="email-body">
-            <p class="greeting">Hi {{ $reminder->user->name }},</p>
-            <p>This is a friendly reminder about an upcoming project:</p>
+            <p class="greeting">Halo {{ $user->name }},</p>
+            <p>Ini adalah pemberitahuan penting mengenai proyek yang akan mencapai deadline:</p>
 
             <div class="project-card">
-                <h2 class="project-name">{{ $reminder->project->name }}</h2>
+                <h2 class="project-name">{{ $project->name }} <span class="urgency-badge">BESOK</span></h2>
                 <div class="project-detail">
                     <i>📅</i>
-                    <span>Starts <span class="highlight">tomorrow</span> ({{ \Carbon\Carbon::parse($reminder->project->start_date)->format('l, F j, Y') }})</span>
+                    <span>Deadline: <span class="highlight">{{ $deadline }}</span></span>
                 </div>
                 <div class="project-detail">
                     <i>⏳</i>
-                    <span>Status: <span class="highlight">{{ ucfirst($reminder->project->status) }}</span></span>
+                    <span>Status: <span class="highlight">{{ ucfirst(str_replace('_', ' ', $project->status)) }}</span></span>
                 </div>
-                @if($reminder->project->end_date)
                 <div class="project-detail">
-                    <i>🏁</i>
-                    <span>Target completion: {{ \Carbon\Carbon::parse($reminder->project->end_date)->format('M j, Y') }}</span>
+                    <i>👤</i>
+                    <span>Pemilik Proyek: {{ $project->user->name }}</span>
                 </div>
-                @endif
             </div>
 
-            <p>Make sure you're prepared for the kickoff!</p>
+            <p>Waktunya menyelesaikan semua tugas sebelum deadline!</p>
 
             <center>
-                <a href="{{ route('projects.show', $reminder->project) }}" class="cta-button">View Project Details</a>
+                <a href="{{ route('projects.show', $project) }}" class="cta-button">Lihat Detail Proyek</a>
             </center>
 
-            <p>Best of luck with the project! Let us know if you need any assistance.</p>
+            <p>Jika Anda membutuhkan bantuan, segera hubungi tim manajemen proyek.</p>
         </div>
 
         <div class="email-footer">
             <p>© {{ date('Y') }} Task Manager. All rights reserved.</p>
-            <p>If you didn't request this reminder, please ignore this email.</p>
+            <p>Anda menerima email ini karena terdaftar dalam sistem Task Manager.</p>
         </div>
     </div>
 </body>

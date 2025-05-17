@@ -4,12 +4,12 @@ namespace App\Mail;
 
 use App\Models\Project;
 use Illuminate\Bus\Queueable;
-use Illuminate\Mail\Mailable;
 use App\Models\ReminderProject;
+use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class ProjectReminderMail extends Mailable implements ShouldQueue
+class ProjectReminderMail extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -22,7 +22,13 @@ class ProjectReminderMail extends Mailable implements ShouldQueue
 
     public function build()
     {
-        return $this->subject('Reminder: Project ' . $this->reminder->project->name . ' will start tomorrow')
-            ->view('mail.project_reminder');
+        $project = $this->reminder->project;
+
+        return $this->subject('⏰ Reminder: Deadline Proyek ' . $project->name . ' Besok!')
+            ->view('mail.project_reminder', [
+                'project' => $project,
+                'user' => $this->reminder->user,
+                'deadline' => $project->end_date->format('d F Y')
+            ]);
     }
 }

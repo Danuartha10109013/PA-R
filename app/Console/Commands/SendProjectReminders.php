@@ -6,51 +6,50 @@ use App\Models\Project;
 use App\Models\ReminderProject;
 use Illuminate\Console\Command;
 use App\Mail\ProjectReminderMail;
-use App\Policies\ReminderPolicy;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Carbon\Carbon;
 
 class SendProjectReminders extends Command
 {
     protected $signature = 'project:send-reminder';
-    protected $description = 'Send project reminder emails to users';
-
-    public function __construct()
-    {
-        parent::__construct();
-    }
+    protected $description = 'Send reminder emails 1 day before project deadline';
 
     public function handle()
     {
-        // $reminders = ReminderProject::where('reminder_date', now()->toDateString())->get();
-        // Ambil pengingat dengan tanggal hari ini
-        $reminders = ReminderProject::where('reminder_date', now()->toDateString())
-            ->get()
-            ->filter(function ($reminder) {
-                // Log untuk memverifikasi status proyek
-                Log::info('Project Status: ' . $reminder->project->status);
+        $tomorrow = Carbon::tomorrow()->toDateString();
 
-                // Hanya ambil proyek dengan status 'not_started'
-                return $reminder->project->status == 'pending';
-            });
+        // Cari reminder yang terkait dengan proyek yang deadline-nya besok
+        $reminders = ReminderProject::with(['project', 'user'])
+            ->whereHas('project', function ($query) use ($tomorrow) {
+                $query->whereDate('end_date', $tomorrow) // Menggunakan end_date sebagai deadline
+                    ->where('status', '!=', 'finished');
+            })
+            ->get();
 
-        // Jika tidak ada pengingat yang cocok
         if ($reminders->isEmpty()) {
-            Log::info('No reminders for projects with status "not_started"');
+            $this->info("Tidak ada reminder untuk proyek yang deadline-nya besok ({$tomorrow})");
+            return;
         }
 
         foreach ($reminders as $reminder) {
-            try {
-                // Kirim email
-                Mail::to($reminder->user->email)->send(new ProjectReminderMail($reminder));
+            $this->sendReminder($reminder);
+        }
 
-                // Log untuk memastikan email dikirim
-                Log::info('Reminder email sent to: ' . $reminder->user->email);
+        $this->info("Berhasil mengirim {$reminders->count()} reminder!");
+    }
 
-                $this->info('Reminder email sent to: ' . $reminder->user->email);
-            } catch (\Exception $e) {
-                Log::error('Error sending reminder to ' . $reminder->user->email . ': ' . $e->getMessage());
-            }
+    protected function sendReminder(ReminderProject $reminder)
+    {
+        try {
+            Mail::to($reminder->user->email)
+                ->send(new ProjectReminderMail($reminder));
+
+            Log::info("Reminder terkirim ke {$reminder->user->email} untuk proyek {$reminder->project->name}");
+            $this->info("Reminder terkirim ke {$reminder->user->email}");
+        } catch (\Exception $e) {
+            Log::error("Gagal mengirim reminder ke {$reminder->user->email}: " . $e->getMessage());
+            $this->error("Error: " . $e->getMessage());
         }
     }
 }
