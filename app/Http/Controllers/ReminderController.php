@@ -56,15 +56,6 @@ class ReminderController extends Controller
     public function index()
     {
         try {
-            // Ambil data projects yang akan ditampilkan di kalender
-            // if (Auth::user()->isCeo()) {
-            //     $projects = Project::all();
-            // } else {
-            //     $projects = Project::where('user_id', Auth::id())
-            //         ->orWhereHas('users', function ($q) {
-            //             $q->where('users.id', Auth::id());
-            //         })->get();
-            // }
             $projects = Project::where('user_id', Auth::id())
                 ->orWhereHas('users', function ($q) {
                     $q->where('users.id', Auth::id());

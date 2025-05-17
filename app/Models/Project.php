@@ -1,9 +1,10 @@
 <?php
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
+use App\Models\ReminderProject;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Project extends Model
 {
@@ -68,5 +69,10 @@ class Project extends Model
     public function users()
     {
         return $this->belongsToMany(User::class, 'project_teams', 'project_id', 'user_id');
+    }
+
+    public function reminders()
+    {
+        return $this->hasMany(ReminderProject::class);
     }
 }

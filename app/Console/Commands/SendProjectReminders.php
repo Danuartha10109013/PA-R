@@ -2,86 +2,55 @@
 
 namespace App\Console\Commands;
 
-use Carbon\Carbon;
 use App\Models\Project;
-use App\Models\Notification;
+use App\Models\ReminderProject;
 use Illuminate\Console\Command;
 use App\Mail\ProjectReminderMail;
+use App\Policies\ReminderPolicy;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 class SendProjectReminders extends Command
 {
-    protected $signature = 'reminders:send';
-    protected $description = 'Send reminder emails for upcoming projects';
+    protected $signature = 'project:send-reminder';
+    protected $description = 'Send project reminder emails to users';
+
+    public function __construct()
+    {
+        parent::__construct();
+    }
 
     public function handle()
     {
-        $tomorrow = now()->addDay()->format('Y-m-d');
-        $this->info("Checking projects for date: {$tomorrow}");
+        // $reminders = ReminderProject::where('reminder_date', now()->toDateString())->get();
+        // Ambil pengingat dengan tanggal hari ini
+        $reminders = ReminderProject::where('reminder_date', now()->toDateString())
+            ->get()
+            ->filter(function ($reminder) {
+                // Log untuk memverifikasi status proyek
+                Log::info('Project Status: ' . $reminder->project->status);
 
-        $projects = Project::whereDate('start_date', $tomorrow)
-            ->where('status', '!=', 'completed')
-            ->with(['users', 'notifications' => function ($query) {
-                $query->where('type', 'reminder')
-                    ->whereDate('created_at', today());
-            }])
-            ->get();
+                // Hanya ambil proyek dengan status 'not_started'
+                return $reminder->project->status == 'pending';
+            });
 
-        foreach ($projects as $project) {
-            $this->notifyProjectOwner($project);
-            $this->notifyTeamMembers($project);
+        // Jika tidak ada pengingat yang cocok
+        if ($reminders->isEmpty()) {
+            Log::info('No reminders for projects with status "not_started"');
         }
 
-        $this->info('Reminder emails sent successfully.');
-    }
+        foreach ($reminders as $reminder) {
+            try {
+                // Kirim email
+                Mail::to($reminder->user->email)->send(new ProjectReminderMail($reminder));
 
-    protected function notifyProjectOwner(Project $project)
-    {
-        if (!$this->alreadyNotified($project, $project->user)) {
-            $this->sendEmailAndCreateNotification($project, $project->user);
-        }
-    }
+                // Log untuk memastikan email dikirim
+                Log::info('Reminder email sent to: ' . $reminder->user->email);
 
-    protected function notifyTeamMembers(Project $project)
-    {
-        foreach ($project->users as $user) {
-            if (!$this->alreadyNotified($project, $user)) {
-                $this->sendEmailAndCreateNotification($project, $user);
+                $this->info('Reminder email sent to: ' . $reminder->user->email);
+            } catch (\Exception $e) {
+                Log::error('Error sending reminder to ' . $reminder->user->email . ': ' . $e->getMessage());
             }
-        }
-    }
-
-    protected function alreadyNotified(Project $project, $user)
-    {
-        return $project->notifications
-            ->where('user_id', $user->id)
-            ->isNotEmpty();
-    }
-
-    protected function sendEmailAndCreateNotification(Project $project, $user)
-    {
-        try {
-            Mail::to($user->email)->send(new ProjectReminderMail($project));
-
-            Notification::create([
-                'project_id' => $project->id,
-                'user_id' => $user->id,
-                'type' => 'reminder',
-                'message' => 'Reminder untuk project ' . $project->name . ' yang dimulai besok',
-                'sent_at' => now(),
-                'is_sent' => true
-            ]);
-        } catch (\Exception $e) {
-            Log::error("Gagal mengirim reminder untuk project {$project->id} ke user {$user->id}: " . $e->getMessage());
-
-            Notification::create([
-                'project_id' => $project->id,
-                'user_id' => $user->id,
-                'type' => 'reminder',
-                'message' => 'Reminder untuk project ' . $project->name . ' (GAGAL TERKIRIM)',
-                'is_sent' => false
-            ]);
         }
     }
 }

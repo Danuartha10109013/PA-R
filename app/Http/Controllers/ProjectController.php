@@ -1,8 +1,11 @@
 <?php
+
 namespace App\Http\Controllers;
 
-use App\Models\Project;
+use Carbon\Carbon;
 use App\Models\User;
+use App\Models\Project;
+use App\Models\ReminderProject;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -39,11 +42,11 @@ class ProjectController extends Controller
             }])->get();
         } else {
             // Other users see only their projects
-            $projects = Project::where(function($query) {
+            $projects = Project::where(function ($query) {
                 $query->where('user_id', Auth::id())
-                      ->orWhereHas('users', function($q) {
-                          $q->where('users.id', Auth::id());
-                      });
+                    ->orWhereHas('users', function ($q) {
+                        $q->where('users.id', Auth::id());
+                    });
             })->withCount(['tasks as perencanaan_tasks' => function ($query) {
                 $query->where('status', 'perencanaan');
             }, 'tasks as pembuatan_tasks' => function ($query) {
@@ -65,12 +68,34 @@ class ProjectController extends Controller
         return view('projects.create');
     }
 
+    // public function store(Request $request)
+    // {
+    //     if (Auth::user()->isCeo()) {
+    //         abort(403, 'CEO role cannot create projects.');
+    //     }
+
+    //     $request->validate([
+    //         'name' => 'required|string|max:255',
+    //         'description' => 'nullable|string',
+    //         'start_date' => 'nullable|date',
+    //         'end_date' => 'nullable|date',
+    //         'status' => 'required|in:not_started,in_progress,completed',
+    //         'budget' => 'nullable|numeric',
+    //     ]);
+
+    //     Auth::user()->projects()->create($request->all());
+
+    //     return redirect()->route('projects.index')->with('success', 'Daftar konten created successfully.');
+    // }
+
     public function store(Request $request)
     {
+        // Cek apakah pengguna adalah CEO, jika iya, batalkan proses
         if (Auth::user()->isCeo()) {
             abort(403, 'CEO role cannot create projects.');
         }
 
+        // Validasi input request
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
@@ -80,10 +105,24 @@ class ProjectController extends Controller
             'budget' => 'nullable|numeric',
         ]);
 
-        Auth::user()->projects()->create($request->all());
+        // Simpan proyek yang baru dibuat
+        $project = Auth::user()->projects()->create($request->all());
 
-        return redirect()->route('projects.index')->with('success', 'Daftar konten created successfully.');
+        // Menambahkan pengingat (reminder) H-1 untuk proyek yang baru dibuat
+        $startDate = Carbon::parse($project->start_date);
+        $reminderDate = $startDate->subDay(); // Menghitung H-1 dari tanggal mulai proyek
+
+        // Membuat pengingat untuk proyek
+        ReminderProject::create([
+            'project_id' => $project->id,
+            'user_id' => $project->user_id, // Mengirim pengingat kepada user yang membuat proyek
+            'reminder_date' => $reminderDate->toDateString(),
+        ]);
+
+        // Redirect ke halaman index proyek dengan pesan sukses
+        return redirect()->route('projects.index')->with('success', 'Project created successfully and reminder set.');
     }
+
 
     public function show(Project $project)
     {
