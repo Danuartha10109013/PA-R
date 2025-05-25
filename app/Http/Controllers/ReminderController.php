@@ -56,10 +56,19 @@ class ReminderController extends Controller
     public function index()
     {
         try {
-            $projects = Project::where('user_id', Auth::id())
-                ->orWhereHas('users', function ($q) {
-                    $q->where('users.id', Auth::id());
-                })->get();
+            $user = Auth::user();
+
+            // Jika role == CEO, tampilkan SEMUA PROYEK
+            if ($user->role == 'ceo') {
+                $projects = Project::all(); // Ambil semua proyek tanpa filter
+            }
+            // Jika bukan CEO, tampilkan hanya proyek miliknya atau yang di-assign ke dia
+            else {
+                $projects = Project::where('user_id', $user->id)
+                    ->orWhereHas('users', function ($q) use ($user) {
+                        $q->where('users.id', $user->id);
+                    })->get();
+            }
 
             // Format data untuk kalender
             $projectsByDate = [];
