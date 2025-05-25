@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
@@ -17,27 +18,43 @@ class UserController extends Controller
         return view('auth.edit', compact('user'));
     }
 
-    // Memperbarui profil pengguna yang sedang login
     public function update(Request $request)
     {
-        $validated = $request->validate([
+        $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255',
-            'phone_number' => 'required|string|regex:/^8[1-9][0-9]{7,10}$/', // Validasi format 8xxxxxxxxxx (tanpa 0)
+            'email' => 'required|string|email|max:255|unique:users,email,' . Auth::id(),
+            'phone_number' => 'required|string|regex:/^8[1-9][0-9]{7,10}$/',
             'password' => 'nullable|string|min:8|confirmed',
         ]);
 
+        if ($validator->fails()) {
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
         $user = Auth::user();
-        $user->name = $validated['name'];
-        $user->email = $validated['email'];
-        // Tambahkan 0 di depan sebelum simpan ke database
-        $user->phone_number = '0' . $validated['phone_number'];
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->phone_number = '0' . $request->phone_number;
 
         if ($request->filled('password')) {
-            $user->password = Hash::make($validated['password']);
+            $user->password = Hash::make($request->password);
         }
 
         $user->save();
+
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Profile updated successfully',
+                'redirect' => route('dashboard')
+            ]);
+        }
 
         return redirect()->route('dashboard')->with('success', 'Profil berhasil diperbarui');
     }

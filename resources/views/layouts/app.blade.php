@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title> @yield('title') | Task Manager </title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="shortcut icon" href="{{ asset('assets/img/logo-circle.png') }}" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -99,6 +100,38 @@
 
         main {
             flex-grow: 1;
+        }
+
+        .modal-content {
+            overflow: hidden;
+            /* Ini yang paling penting */
+            border: none;
+            /* Hilangkan border default */
+            border-radius: 10px;
+            /* Sesuaikan dengan radius header */
+        }
+
+        .modal-header {
+            background-color: #091A60;
+            color: white;
+            border-radius: 10px 10px 0 0;
+            padding: 1rem 1.5rem;
+            border: none;
+            /* Pastikan tidak ada border */
+            margin: 0;
+            /* Pastikan tidak ada margin */
+        }
+
+        .modal-header .btn-close {
+            filter: invert(1) brightness(100%);
+            /* Mengubah warna ikon menjadi putih */
+            opacity: 1;
+            /* Membuat full opacity */
+        }
+
+        .modal-header .btn-close:hover {
+            opacity: 0.75;
+            /* Sedikit transparan saat hover */
         }
     </style>
 </head>
@@ -203,7 +236,11 @@
                                     {{ Auth::user()->name }}
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                                    <li><a class="dropdown-item" href="{{ route('profile.edit') }}">Edit Profile</a>
+                                    <li>
+                                        <a class="dropdown-item" href="#" data-bs-toggle="modal"
+                                            data-bs-target="#editProfileModal">
+                                            Edit Profile
+                                        </a>
                                     </li>
                                     <li>
                                         <form method="POST" action="{{ route('logout') }}" id="logout-form">
@@ -226,6 +263,25 @@
                 <span class="text-muted">&copy; {{ date('Y') }} Task Manager </span>
             </div>
         </footer>
+    </div>
+
+    <!-- Edit Profile Modal -->
+    <div class="modal fade" id="editProfileModal" data-bs-backdrop="static" tabindex="-1"
+        aria-labelledby="editProfileModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="editProfileModalLabel">
+                        <i class="bi bi-person-gear me-2"></i>Edit Profile
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    @include('modal.edit-profile')
+                </div>
+            </div>
+        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

@@ -7,7 +7,9 @@
         <div class="d-flex justify-content-between align-items-center bg-white mb-4 shadow-sm p-3 rounded">
             <h2>Daftar konten</h2>
             @if (Auth::user() && Auth::user()->isMember() && !Auth::user()->isCeo())
-                <a href="{{ route('projects.create') }}" class="btn btn-primary">Tambah konten</a>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createProjectModal">
+                    Tambah konten
+                </button>
             @endif
         </div>
 
@@ -47,9 +49,14 @@
 
                             {{-- Show edit and delete buttons only to members --}}
                             @if (Auth::user() && Auth::user()->isMember() && !Auth::user()->isCeo())
-                                <a href="{{ route('projects.edit', $project->id) }}" class="btn btn-warning" title="Edit">
+                                <button type="button" class="btn btn-warning" title="Edit" data-bs-toggle="modal"
+                                    data-bs-target="#editProjectModal" data-id="{{ $project->id }}"
+                                    data-name="{{ $project->name }}" data-description="{{ $project->description }}"
+                                    data-start-date="{{ \Carbon\Carbon::parse($project->start_date)->format('Y-m-d') }}"
+                                    data-end-date="{{ \Carbon\Carbon::parse($project->end_date)->format('Y-m-d') }}"
+                                    data-status="{{ $project->status }}">
                                     <i class="bi bi-pencil-square"></i>
-                                </a>
+                                </button>
                                 <form action="{{ route('projects.destroy', $project->id) }}" method="POST"
                                     class="d-inline">
                                     @csrf
@@ -66,4 +73,153 @@
             @endforeach
         </div>
     </div>
+
+    <!-- Create Project Modal -->
+    <div class="modal fade" id="createProjectModal" data-bs-backdrop="static" tabindex="-1"
+        aria-labelledby="createProjectModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createProjectModalLabel">Tambah konten</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                @include('modal.add-project')
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Project Modal -->
+    <div class="modal fade" id="editProjectModal" data-bs-backdrop="static" tabindex="-1"
+        aria-labelledby="editProjectModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editProjectModalLabel">Edit Project</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                @include('modal.edit-project')
+            </div>
+        </div>
+    </div>
 @endsection
+
+@push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set up date validation for create form
+            const createStartDate = document.getElementById('create_start_date');
+            const createEndDate = document.getElementById('create_end_date');
+
+            createStartDate.addEventListener('change', function() {
+                createEndDate.min = this.value;
+            });
+
+            // Set up date validation for edit form
+            const editStartDate = document.getElementById('edit_start_date');
+            const editEndDate = document.getElementById('edit_end_date');
+
+            editStartDate.addEventListener('change', function() {
+                editEndDate.min = this.value;
+            });
+
+            // Edit modal setup
+            var editProjectModal = document.getElementById('editProjectModal');
+            editProjectModal.addEventListener('show.bs.modal', function(event) {
+                var button = event.relatedTarget;
+                var projectId = button.getAttribute('data-id');
+                var projectName = button.getAttribute('data-name');
+                var projectDescription = button.getAttribute('data-description');
+                var projectStartDate = button.getAttribute('data-start-date');
+                var projectEndDate = button.getAttribute('data-end-date');
+                var projectStatus = button.getAttribute('data-status');
+
+                var modalTitle = editProjectModal.querySelector('.modal-title');
+                var nameInput = editProjectModal.querySelector('#edit_name');
+                var descriptionInput = editProjectModal.querySelector('#edit_description');
+                var startDateInput = editProjectModal.querySelector('#edit_start_date');
+                var endDateInput = editProjectModal.querySelector('#edit_end_date');
+                var statusInput = editProjectModal.querySelector('#edit_status');
+                var form = editProjectModal.querySelector('#editProjectForm');
+
+                modalTitle.textContent = 'Edit Project: ' + projectName;
+                nameInput.value = projectName;
+                descriptionInput.value = projectDescription;
+                startDateInput.value = projectStartDate;
+                endDateInput.value = projectEndDate;
+                statusInput.value = projectStatus;
+
+                form.action = '/projects/' + projectId;
+            });
+
+            // Handle form submission with AJAX
+            $('#editProjectForm').on('submit', function(e) {
+                e.preventDefault();
+                var form = $(this);
+                var url = form.attr('action');
+
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: form.serialize(),
+                    success: function(response) {
+                        if (response.success) {
+                            window.location.href = response.redirect;
+                        }
+                    },
+                    error: function(xhr) {
+                        if (xhr.status === 422) {
+                            var errors = xhr.responseJSON.errors;
+                            $.each(errors, function(key, value) {
+                                $('#' + 'edit_' + key).addClass('is-invalid');
+                                $('#' + 'edit_' + key).after(
+                                    '<div class="invalid-feedback">' + value[0] +
+                                    '</div>');
+                            });
+                        } else {
+                            alert('Terjadi kesalahan: ' + xhr.responseJSON.message);
+                        }
+                    }
+                });
+            });
+
+            // Handle create form submission with AJAX
+            $('#createProjectForm').on('submit', function(e) {
+                e.preventDefault();
+                var form = $(this);
+                var url = form.attr('action');
+
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: form.serialize(),
+                    success: function(response) {
+                        if (response.success) {
+                            window.location.href = response.redirect;
+                        }
+                    },
+                    error: function(xhr) {
+                        if (xhr.status === 422) {
+                            var errors = xhr.responseJSON.errors;
+                            $.each(errors, function(key, value) {
+                                $('#' + 'create_' + key).addClass('is-invalid');
+                                $('#' + 'create_' + key).after(
+                                    '<div class="invalid-feedback">' + value[0] +
+                                    '</div>');
+                            });
+                        } else {
+                            alert('Terjadi kesalahan: ' + xhr.responseJSON.message);
+                        }
+                    }
+                });
+            });
+
+            // Remove validation errors when modals are hidden
+            $('#editProjectModal, #createProjectModal').on('hidden.bs.modal', function() {
+                $(this).find('.is-invalid').removeClass('is-invalid');
+                $(this).find('.invalid-feedback').remove();
+            });
+        });
+    </script>
+@endpush
