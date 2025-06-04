@@ -33,7 +33,7 @@ class ContentController extends Controller
 
         Content::create($validated);
 
-        return redirect()->route('content.index')->with('success', 'Analisis created successfully');
+        return redirect()->route('content.index')->with('success', 'Content created successfully');
     }
 
     public function like($id)
@@ -228,7 +228,7 @@ class ContentController extends Controller
         $content->update($validated);
 
         return redirect()->route('content.index')
-            ->with('success', 'Analisis updated successfully');
+            ->with('success', 'Content updated successfully');
     }
 
     /**
@@ -244,7 +244,7 @@ class ContentController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Analisis deleted successfully'
+            'message' => 'Content deleted successfully'
         ]);
     }
 }

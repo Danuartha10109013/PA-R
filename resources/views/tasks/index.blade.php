@@ -224,7 +224,7 @@
                     <form action="{{ route('projects.tasks.store', $project->id) }}" method="POST">
                         @csrf
                         <div class="modal-header">
-                            <h5 class="modal-title" id="createTaskModalLabel">Tambah</h5>
+                            <h5 class="modal-title" id="createTaskModalLabel">Tambah Task</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                 aria-label="Close"></button>
                         </div>

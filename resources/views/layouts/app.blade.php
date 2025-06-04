@@ -158,7 +158,7 @@
             <li class="nav-item">
                 <a class="nav-link {{ request()->is('projects*') ? 'active' : '' }}"
                     href="{{ route('projects.index') }}">
-                    <i class="bi bi-folder"></i> Daftar konten
+                    <i class="bi bi-folder"></i> Project 
                 </a>
             </li>
             {{-- <li class="nav-item">
@@ -182,14 +182,14 @@
             <li class="nav-item">
                 <a class="nav-link {{ request()->is('reminders*') ? 'active' : '' }}"
                     href="{{ route('reminders.index') }}">
-                    <i class="bi bi-bell"></i> Jadwal konten
+                    <i class="bi bi-bell"></i> Reminder
                 </a>
             </li>
             @if (Auth::user()->role == 'member')
                 <li class="nav-item">
                     <a class="nav-link {{ request()->is('content*') ? 'active' : '' }}"
                         href="{{ route('content.index') }}">
-                        <i class="bi bi-collection"></i> Analisis
+                        <i class="bi bi-collection"></i> Content
                     </a>
                 </li>
 

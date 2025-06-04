@@ -29,38 +29,41 @@ class ProjectController extends Controller
     public function index()
     {
         if (Auth::user()->isCeo()) {
-            $projects = Project::withCount(['tasks as perencanaan_tasks' => function ($query) {
-                $query->where('status', 'perencanaan');
-            }, 'tasks as pembuatan_tasks' => function ($query) {
-                $query->where('status', 'pembuatan');
-            }, 'tasks as pengeditan_tasks' => function ($query) {
-                $query->where('status', 'pengeditan');
-            }, 'tasks as peninjauan_tasks' => function ($query) {
-                $query->where('status', 'peninjauan');
-            }, 'tasks as publikasi_tasks' => function ($query) {
-                $query->where('status', 'publikasi');
-            }])->get();
+            $projects = Project::withCount([
+                'tasks as perencanaan_tasks' => fn($query) => $query->where('status', 'perencanaan'),
+                'tasks as pembuatan_tasks' => fn($query) => $query->where('status', 'pembuatan'),
+                'tasks as pengeditan_tasks' => fn($query) => $query->where('status', 'pengeditan'),
+                'tasks as peninjauan_tasks' => fn($query) => $query->where('status', 'peninjauan'),
+                'tasks as publikasi_tasks' => fn($query) => $query->where('status', 'publikasi'),
+            ])->with('tasks') // penting agar accessor status bisa digunakan tanpa query tambahan
+            ->orderBy('created_at', 'desc')
+            ->get();
         } else {
             $projects = Project::where(function ($query) {
                 $query->where('user_id', Auth::id())
                     ->orWhereHas('users', function ($q) {
                         $q->where('users.id', Auth::id());
                     });
-            })->withCount(['tasks as perencanaan_tasks' => function ($query) {
-                $query->where('status', 'perencanaan');
-            }, 'tasks as pembuatan_tasks' => function ($query) {
-                $query->where('status', 'pembuatan');
-            }, 'tasks as pengeditan_tasks' => function ($query) {
-                $query->where('status', 'pengeditan');
-            }, 'tasks as peninjauan_tasks' => function ($query) {
-                $query->where('status', 'peninjauan');
-            }, 'tasks as publikasi_tasks' => function ($query) {
-                $query->where('status', 'publikasi');
-            }])->get();
+            })->withCount([
+                'tasks as perencanaan_tasks' => fn($query) => $query->where('status', 'perencanaan'),
+                'tasks as pembuatan_tasks' => fn($query) => $query->where('status', 'pembuatan'),
+                'tasks as pengeditan_tasks' => fn($query) => $query->where('status', 'pengeditan'),
+                'tasks as peninjauan_tasks' => fn($query) => $query->where('status', 'peninjauan'),
+                'tasks as publikasi_tasks' => fn($query) => $query->where('status', 'publikasi'),
+            ])->with('tasks')
+            ->orderBy('created_at', 'desc')
+            ->get();
+        }
+
+        if (request()->has('status') && request('status') !== '') {
+            $projects = $projects->filter(function ($project) {
+                return $project->status === request('status');
+            })->values(); // reset index array setelah filter
         }
 
         return view('projects.index', compact('projects'));
     }
+
 
     // New method to fetch project data for the modal
     public function getProjectData(Project $project)
@@ -87,7 +90,7 @@ class ProjectController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255|unique:projects',
             'description' => 'nullable|string',
             'start_date' => 'required|date|after_or_equal:today',
             'end_date' => 'nullable|date|after_or_equal:start_date',
@@ -187,7 +190,7 @@ class ProjectController extends Controller
                     'redirect' => route('projects.index')
                 ]);
             }
-            return redirect()->route('projects.index')->with('success', 'Daftar konten updated successfully.');
+            return redirect()->route('projects.index')->with('success', 'Project content updated successfully.');
         } catch (\Exception $e) {
             if ($request->ajax()) {
                 return response()->json([
@@ -207,7 +210,7 @@ class ProjectController extends Controller
 
         $project->delete();
 
-        return redirect()->route('projects.index')->with('success', 'Daftar konten deleted successfully.');
+        return redirect()->route('projects.index')->with('success', 'Project content deleted successfully.');
     }
 
     public function addMember(Request $request)

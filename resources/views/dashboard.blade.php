@@ -162,7 +162,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 },
                 title: {
                     display: true,
-                    text: 'Alternative Rankings by TOPSIS Score'
+                    text: 'Rankings Content'
                 }
             },
             scales: {
@@ -176,7 +176,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 y: {
                     title: {
                         display: true,
-                        text: 'Alternatives'
+                        text: 'Content'
                     }
                 }
             }
