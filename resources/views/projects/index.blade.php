@@ -13,7 +13,8 @@
                     <select name="status" class="form-select" onchange="this.form.submit()">
                         <option value="">Semua Status</option>
                         <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
-                        <option value="on_going" {{ request('status') == 'on_going' ? 'selected' : '' }}>In Progress</option>
+                        <option value="on_going" {{ request('status') == 'on_going' ? 'selected' : '' }}>In Progress
+                        </option>
                         <option value="unfinished" {{ request('status') == 'unfinished' ? 'selected' : '' }}>Unfinished
                         </option>
                         <option value="finished" {{ request('status') == 'finished' ? 'selected' : '' }}>Completed</option>
@@ -22,7 +23,8 @@
 
                 {{-- Tombol Tambah Project --}}
                 @if (Auth::user() && Auth::user()->isMember() && !Auth::user()->isCeo())
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createProjectModal">
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                        data-bs-target="#createProjectModal">
                         Tambah project content
                     </button>
                 @endif
@@ -59,21 +61,23 @@
                                 title="View Tasks">
                                 <i class="bi bi-list"></i>
                             </a>
-                            <a href="{{ route('projects.show', $project->id) }}" class="btn btn-primary" title="View Details">
+                            <a href="{{ route('projects.show', $project->id) }}" class="btn btn-primary"
+                                title="View Details">
                                 <i class="bi bi-eye"></i>
                             </a>
 
                             {{-- Show edit and delete buttons only to members --}}
                             @if (Auth::user() && Auth::user()->isMember() && !Auth::user()->isCeo())
                                 <button type="button" class="btn btn-warning" title="Edit" data-bs-toggle="modal"
-                                    data-bs-target="#editProjectModal" data-id="{{ $project->id }}" data-name="{{ $project->name }}"
-                                    data-description="{{ $project->description }}"
+                                    data-bs-target="#editProjectModal" data-id="{{ $project->id }}"
+                                    data-name="{{ $project->name }}" data-description="{{ $project->description }}"
                                     data-start-date="{{ \Carbon\Carbon::parse($project->start_date)->format('Y-m-d') }}"
                                     data-end-date="{{ \Carbon\Carbon::parse($project->end_date)->format('Y-m-d') }}"
                                     data-status="{{ $project->status }}">
                                     <i class="bi bi-pencil-square"></i>
                                 </button>
-                                <form action="{{ route('projects.destroy', $project->id) }}" method="POST" class="d-inline">
+                                <form action="{{ route('projects.destroy', $project->id) }}" method="POST"
+                                    class="d-inline">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-danger" title="Delete"
@@ -122,12 +126,12 @@
 
 @push('scripts')
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             // Set up date validation for create form
             const createStartDate = document.getElementById('create_start_date');
             const createEndDate = document.getElementById('create_end_date');
 
-            createStartDate.addEventListener('change', function () {
+            createStartDate.addEventListener('change', function() {
                 createEndDate.min = this.value;
             });
 
@@ -135,13 +139,13 @@
             const editStartDate = document.getElementById('edit_start_date');
             const editEndDate = document.getElementById('edit_end_date');
 
-            editStartDate.addEventListener('change', function () {
+            editStartDate.addEventListener('change', function() {
                 editEndDate.min = this.value;
             });
 
             // Edit modal setup
             var editProjectModal = document.getElementById('editProjectModal');
-            editProjectModal.addEventListener('show.bs.modal', function (event) {
+            editProjectModal.addEventListener('show.bs.modal', function(event) {
                 var button = event.relatedTarget;
                 var projectId = button.getAttribute('data-id');
                 var projectName = button.getAttribute('data-name');
@@ -169,7 +173,7 @@
             });
 
             // Handle form submission with AJAX
-            $('#editProjectForm').on('submit', function (e) {
+            $('#editProjectForm').on('submit', function(e) {
                 e.preventDefault();
                 var form = $(this);
                 var url = form.attr('action');
@@ -178,15 +182,15 @@
                     type: "POST",
                     url: url,
                     data: form.serialize(),
-                    success: function (response) {
+                    success: function(response) {
                         if (response.success) {
                             window.location.href = response.redirect;
                         }
                     },
-                    error: function (xhr) {
+                    error: function(xhr) {
                         if (xhr.status === 422) {
                             var errors = xhr.responseJSON.errors;
-                            $.each(errors, function (key, value) {
+                            $.each(errors, function(key, value) {
                                 $('#' + 'edit_' + key).addClass('is-invalid');
                                 $('#' + 'edit_' + key).after(
                                     '<div class="invalid-feedback">' + value[0] +
@@ -200,7 +204,7 @@
             });
 
             // Handle create form submission with AJAX
-            $('#createProjectForm').on('submit', function (e) {
+            $('#createProjectForm').on('submit', function(e) {
                 e.preventDefault();
                 var form = $(this);
                 var url = form.attr('action');
@@ -209,15 +213,15 @@
                     type: "POST",
                     url: url,
                     data: form.serialize(),
-                    success: function (response) {
+                    success: function(response) {
                         if (response.success) {
                             window.location.href = response.redirect;
                         }
                     },
-                    error: function (xhr) {
+                    error: function(xhr) {
                         if (xhr.status === 422) {
                             var errors = xhr.responseJSON.errors;
-                            $.each(errors, function (key, value) {
+                            $.each(errors, function(key, value) {
                                 $('#' + 'create_' + key).addClass('is-invalid');
                                 $('#' + 'create_' + key).after(
                                     '<div class="invalid-feedback">' + value[0] +
@@ -231,7 +235,7 @@
             });
 
             // Remove validation errors when modals are hidden
-            $('#editProjectModal, #createProjectModal').on('hidden.bs.modal', function () {
+            $('#editProjectModal, #createProjectModal').on('hidden.bs.modal', function() {
                 $(this).find('.is-invalid').removeClass('is-invalid');
                 $(this).find('.invalid-feedback').remove();
             });

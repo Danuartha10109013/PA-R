@@ -20,6 +20,7 @@ use App\Http\Controllers\ProjectFileController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\ChecklistItemController;
 use App\Http\Controllers\UserController; // Added this line
+use App\Console\Commands\SendProjectReminders;
 
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('login', [LoginController::class, 'login']);
@@ -90,6 +91,11 @@ Route::middleware(['auth'])->group(function () {
 
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    Route::get('/send-project-reminder', function () {
+        Artisan::call('project:send-reminder');
+        return back()->with('success', 'Reminder berhasil dikirim secara manual.');
+    })->middleware('auth')->name('send.project.reminder');
 });
 
 
@@ -103,8 +109,8 @@ Route::middleware(['auth', CheckMemberRole::class])->group(function () {
 });
 
 
-Route::get('/test-reminder', function () {
-    $project = App\Models\Project::first();
-    Mail::to('sopandid546@gmail.com')->send(new App\Mail\ProjectReminderMail($project));
-    return 'Email sent!';
-});
+// Route::get('/test-reminder', function () {
+//     $project = App\Models\Project::first();
+//     Mail::to('sopandid546@gmail.com')->send(new App\Mail\ProjectReminderMail($project));
+//     return 'Email sent!';
+// });

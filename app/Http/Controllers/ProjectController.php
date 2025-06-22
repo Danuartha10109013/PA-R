@@ -29,39 +29,43 @@ class ProjectController extends Controller
     public function index()
     {
         if (Auth::user()->isCeo()) {
-            $projects = Project::withCount([
-                'tasks as perencanaan_tasks' => fn($query) => $query->where('status', 'perencanaan'),
-                'tasks as pembuatan_tasks' => fn($query) => $query->where('status', 'pembuatan'),
-                'tasks as pengeditan_tasks' => fn($query) => $query->where('status', 'pengeditan'),
-                'tasks as peninjauan_tasks' => fn($query) => $query->where('status', 'peninjauan'),
-                'tasks as publikasi_tasks' => fn($query) => $query->where('status', 'publikasi'),
-            ])->with('tasks') // penting agar accessor status bisa digunakan tanpa query tambahan
-            ->orderBy('created_at', 'desc')
-            ->get();
-        } else {
+            $projects = Project::with('tasks')
+                ->withCount([
+                    'tasks as perencanaan_tasks' => fn($q) => $q->where('status', 'perencanaan'),
+                    'tasks as pembuatan_tasks' => fn($q) => $q->where('status', 'pembuatan'),
+                    'tasks as pengeditan_tasks' => fn($q) => $q->where('status', 'pengeditan'),
+                    'tasks as peninjauan_tasks' => fn($q) => $q->where('status', 'peninjauan'),
+                    'tasks as publikasi_tasks' => fn($q) => $q->where('status', 'publikasi'),
+                ])
+                ->orderBy('created_at', 'desc')
+                ->get();
+        }
+        else {
             $projects = Project::where(function ($query) {
                 $query->where('user_id', Auth::id())
-                    ->orWhereHas('users', function ($q) {
-                        $q->where('users.id', Auth::id());
-                    });
-            })->withCount([
-                'tasks as perencanaan_tasks' => fn($query) => $query->where('status', 'perencanaan'),
-                'tasks as pembuatan_tasks' => fn($query) => $query->where('status', 'pembuatan'),
-                'tasks as pengeditan_tasks' => fn($query) => $query->where('status', 'pengeditan'),
-                'tasks as peninjauan_tasks' => fn($query) => $query->where('status', 'peninjauan'),
-                'tasks as publikasi_tasks' => fn($query) => $query->where('status', 'publikasi'),
-            ])->with('tasks')
-            ->orderBy('created_at', 'desc')
-            ->get();
+                    ->orWhereHas('users', fn($q) => $q->where('users.id', Auth::id()));
+            })
+                ->with('tasks')
+                ->withCount([
+                    'tasks as perencanaan_tasks' => fn($q) => $q->where('status', 'perencanaan'),
+                    'tasks as pembuatan_tasks' => fn($q) => $q->where('status', 'pembuatan'),
+                    'tasks as pengeditan_tasks' => fn($q) => $q->where('status', 'pengeditan'),
+                    'tasks as peninjauan_tasks' => fn($q) => $q->where('status', 'peninjauan'),
+                    'tasks as publikasi_tasks' => fn($q) => $q->where('status', 'publikasi'),
+                ])
+                ->orderBy('created_at', 'desc')
+                ->get();
         }
 
+        // ✅ Hitung jumlah berdasarkan accessor status (dinamis)
+        $statusCounts = $projects->groupBy('status')->map->count();
+
+        // ✅ Filter jika ada parameter ?status=
         if (request()->has('status') && request('status') !== '') {
-            $projects = $projects->filter(function ($project) {
-                return $project->status === request('status');
-            })->values(); // reset index array setelah filter
+            $projects = $projects->filter(fn($project) => $project->status === request('status'))->values();
         }
 
-        return view('projects.index', compact('projects'));
+        return view('projects.index', compact('projects', 'statusCounts'));
     }
 
 
