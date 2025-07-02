@@ -52,14 +52,36 @@
             </div>
         </div>
 
-        @if (auth()->user()->isCeo())
-            <form action="{{ route('send.project.reminder') }}" method="GET"
-                onsubmit="return confirm('Yakin kirim reminder sekarang?')">
-                <button type="submit" class="btn btn-primary mb-3">
-                    <i class="bi bi-envelope"></i> Kirim Reminder Proyek (Manual)
-                </button>
-            </form>
+        @if (auth()->user()->isMember())
+            <!-- Tombol trigger modal -->
+            <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal"
+                data-bs-target="#confirmReminderModal">
+                <i class="bi bi-envelope"></i> Kirim Reminder Proyek (Manual)
+            </button>
+
+            <!-- Modal -->
+            <div class="modal fade" id="confirmReminderModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="confirmReminderLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="confirmReminderLabel">Konfirmasi</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+                        </div>
+                        <div class="modal-body">
+                            Yakin kirim reminder sekarang?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                            <form action="{{ route('send.project.reminder') }}" method="GET" class="d-inline">
+                                <button type="submit" class="btn btn-primary">Ya, Kirim</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
         @endif
+
 
         @if (session('success'))
             <div class="alert alert-success">{{ session('success') }}</div>
