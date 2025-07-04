@@ -1,7 +1,7 @@
 <form id="profileForm" method="POST" action="{{ route('profile.update') }}" class="needs-validation" novalidate>
     @csrf
     <div class="mb-3">
-        <label for="name" class="form-label">Nama Lengkap</label>
+        <label for="name" class="form-label">Name </label>
         <div class="input-group">
             <span class="input-group-text"><i class="bi bi-person"></i></span>
             <input type="text" name="name" id="name" class="form-control @error('name') is-invalid @enderror"
@@ -27,7 +27,7 @@
     </div>
 
     <div class="mb-3">
-        <label for="phone_number" class="form-label">Nomor WhatsApp</label>
+        <label for="phone_number" class="form-label">No WhatsApp</label>
         <div class="input-group">
             <span class="input-group-text">+62</span>
             <input type="tel" name="phone_number" id="phone_number"
@@ -59,7 +59,7 @@
     </div>
 
     <div class="mb-3">
-        <label for="password_confirmation" class="form-label">Konfirmasi Password Baru</label>
+        <label for="password_confirmation" class="form-label">Confirmation New Password</label>
         <div class="input-group">
             <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
             <input type="password" name="password_confirmation" id="password_confirmation"
@@ -76,10 +76,10 @@
 
     <div class="d-grid gap-2 mt-4">
         <button type="submit" class="btn btn-primary btn-lg">
-            <i class="bi bi-check-circle me-2"></i>Selesai
+            <i class="bi bi-check-circle me-2"></i>Done
         </button>
         <a href="{{ route('dashboard') }}" class="btn btn-outline-secondary">
-            <i class="bi bi-arrow-left me-2"></i>Kembali
+            <i class="bi bi-arrow-left me-2"></i>Close 
         </a>
     </div>
 </form>

@@ -39,7 +39,7 @@
                             <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
-                    <button type="submit" class="btn btn-primary">Selesai</button>
+                    <button type="submit" class="btn btn-primary">Done</button>
                     <a href="{{ route('reminders.index') }}" class="btn btn-secondary">Cancel</a>
                 </form>
             </div>

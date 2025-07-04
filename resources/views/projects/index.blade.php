@@ -3,6 +3,16 @@
     Project
 @endsection
 @section('content')
+
+@if ($errors->any())
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const modal = new bootstrap.Modal(document.getElementById('createProjectModal'));
+            modal.show();
+        });
+    </script>
+@endif
+
     <div class="container">
         <div class="d-flex justify-content-between align-items-center bg-white mb-4 shadow-sm p-3 rounded flex-wrap gap-2">
             <h2 class="mb-0">Project Content</h2>
@@ -25,7 +35,7 @@
                 @if (Auth::user() && Auth::user()->isMember() && !Auth::user()->isCeo())
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                         data-bs-target="#createProjectModal">
-                        Tambah project content
+                        Add project content
                     </button>
                 @endif
             </div>
@@ -99,7 +109,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="createProjectModalLabel">Tambah project content</h5>
+                    <h5 class="modal-title" id="createProjectModalLabel">Add project content</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                         aria-label="Close"></button>
                 </div>
@@ -240,5 +250,6 @@
                 $(this).find('.invalid-feedback').remove();
             });
         });
+        
     </script>
 @endpush

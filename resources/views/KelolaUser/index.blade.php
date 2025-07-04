@@ -3,7 +3,7 @@
 @section('content')
     <div class="container">
         <h2>Kelola User</h2>
-        <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#modalCreateUser">+ Tambah User</button>
+        <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#modalCreateUser">+ Add User</button>
 
         @if (session('success'))
             <div class="alert alert-success">{{ session('success') }}</div>
@@ -12,7 +12,7 @@
         <table class="table table-bordered">
             <thead>
                 <tr>
-                    <th>Nama</th>
+                    <th>Name</th>
                     <th>Email</th>
                     <th>Role</th>
                     <th>Aksi</th>
@@ -41,7 +41,7 @@
                                 @csrf
                                 @method('DELETE')
                                 <button class="btn btn-sm btn-danger"
-                                    onclick="return confirm('Hapus user ini?')">Hapus</button>
+                                    onclick="return confirm('Hapus user ini?')">Delete</button>
                             </form>
                         </td>
                     </tr>
@@ -58,12 +58,12 @@
                 @csrf
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="createUserLabel">Tambah User</h5>
+                        <h5 class="modal-title" id="createUserLabel">Add User</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
                     </div>
                     <div class="modal-body">
                         <div class="mb-3">
-                            <label>Nama</label>
+                            <label>Name</label>
                             <input type="text" name="name" class="form-control" required>
                         </div>
                         <div class="mb-3">
@@ -80,18 +80,18 @@
                             </div>
                         </div>
 
-                        <div class="mb-3">
+                        {{-- <div class="mb-3">
                             <label>Role</label>
                             <select name="role" class="form-control" required>
                                 <option value="">--Pilih Role--</option>
                                 <option value="member">Member</option>
                                 <option value="ceo">CEO</option>
                             </select>
-                        </div>
+                        </div> --}}
                     </div>
                     <div class="modal-footer">
-                        <button class="btn btn-success">Simpan</button>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button class="btn btn-success">Done</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     </div>
                 </div>
             </form>
@@ -112,7 +112,7 @@
                     </div>
                     <div class="modal-body">
                         <div class="mb-3">
-                            <label>Nama</label>
+                            <label>Name</label>
                             <input type="text" name="name" id="edit_name" class="form-control" required>
                         </div>
                         <div class="mb-3">
@@ -120,7 +120,7 @@
                             <input type="email" name="email" id="edit_email" class="form-control" required>
                         </div>
                         <div class="mb-3">
-                            <label>Password Baru (kosongkan jika tidak ingin mengganti)</label>
+                            <label>New Password (kosongkan jika tidak ingin mengganti)</label>
                             <div class="input-group">
                                 <input type="password" name="password" class="form-control" id="password_edit">
                                 <button type="button" class="btn btn-outline-secondary" id="togglePassword_edit">
@@ -128,7 +128,7 @@
                                 </button>
                             </div>
                         </div>
-                        <div class="mb-3">
+                        {{-- <div class="mb-3">
                             <label>Role</label>
                             <select name="role" id="edit_role" class="form-control" required>
                                 <option value="">--Pilih Role--</option>
@@ -136,10 +136,10 @@
                                 <option value="ceo">CEO</option>
                             </select>
                         </div>
-                    </div>
+                    </div> --}}
                     <div class="modal-footer">
-                        <button class="btn btn-primary">Update</button>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button class="btn btn-primary">Done</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     </div>
                 </div>
             </form>

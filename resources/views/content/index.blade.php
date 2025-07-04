@@ -14,7 +14,7 @@
             <h1 class="mb-0"></h1>
             <div class="d-flex flex-column gap-2">
                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createContentModal">
-                    <i class="bi bi-plus"></i> Tambah data content 
+                    <i class="bi bi-plus"></i> Add data content 
                 </button>
                 @php
                     $contentCount = count($allContent);
@@ -117,7 +117,7 @@
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                    <button type="submit" class="btn btn-primary">Selesai</button>
+                                                    <button type="submit" class="btn btn-primary">Done</button>
                                                 </div>
                                             </form>
                                         </div>
@@ -186,7 +186,7 @@
             <form action="{{ route('content.store') }}" method="POST">
                 @csrf
                 <div class="modal-header">
-                    <h5 class="modal-title" id="createContentModalLabel">Tambah data content</h5>
+                    <h5 class="modal-title" id="createContentModalLabel">Add data content</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -227,7 +227,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Selesai</button>
+                    <button type="submit" class="btn btn-primary">Done</button>
                 </div>
             </form>
         </div>
@@ -239,15 +239,15 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header bg-danger text-white">
-                <h5 class="modal-title" id="deleteConfirmationModalLabel">Konfirmasi Hapus</h5>
+                <h5 class="modal-title" id="deleteConfirmationModalLabel">Confirmation Delete</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 Are you sure you want to delete this content?
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Hapus</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Yes</button>
             </div>
         </div>
     </div>

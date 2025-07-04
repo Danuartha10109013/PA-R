@@ -115,7 +115,7 @@
                                 <input type="text" name="name" id="name"
                                     class="form-control @error('name') is-invalid @enderror"
                                     value="{{ auth()->user()->name }}" required placeholder="Your Name">
-                                <label for="name">Nama</label>
+                                <label for="name">Name</label>
                                 @error('name')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -132,7 +132,7 @@
                             </div>
 
                             <div class="mb-3">
-                                <label for="phone_number" class="form-label">Nomor WhatsApp</label>
+                                <label for="phone_number" class="form-label">No WhatsApp</label>
                                 <div class="input-group">
                                     <span class="input-group-text">+62</span>
                                     <input type="tel" name="phone_number" id="phone_number"
@@ -171,10 +171,10 @@
 
                             <div class="d-grid gap-2">
                                 <button type="submit" class="btn btn-primary">
-                                    <i class="bi bi-check-circle me-2"></i>Selesai
+                                    <i class="bi bi-check-circle me-2"></i>Done
                                 </button>
                                 <a href="{{ route('dashboard') }}" class="btn btn-secondary">
-                                    <i class="bi bi-arrow-left me-2"></i>Kembali
+                                    <i class="bi bi-arrow-left me-2"></i>Close
                                 </a>
                             </div>
                         </form>

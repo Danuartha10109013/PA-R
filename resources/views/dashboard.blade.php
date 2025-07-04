@@ -25,7 +25,7 @@
             <div class="col-md-3 col-sm-6 mb-3">
                 <div class="card text-bg-info shadow-sm h-100">
                     <div class="card-body text-center">
-                        <h6 class="card-title">On Going</h6>
+                        <h6 class="card-title">In Progress</h6>
                         <h2 class="fw-bold">{{ $projectStatusCounts['on_going'] ?? 0 }}</h2>
                     </div>
                 </div>
@@ -45,7 +45,7 @@
             <div class="col-md-3 col-sm-6 mb-3">
                 <div class="card text-bg-success shadow-sm h-100">
                     <div class="card-body text-center">
-                        <h6 class="card-title">Finished</h6>
+                        <h6 class="card-title">Completed</h6>
                         <h2 class="fw-bold">{{ $projectStatusCounts['finished'] ?? 0 }}</h2>
                     </div>
                 </div>
@@ -108,7 +108,7 @@
             <div class="col-12">
                 <div class="card shadow-sm">
                     <div class="card-header">
-                        <h5 class="card-title m-0">Jumlah Proyek per Bulan ({{ $selectedYear }})</h5>
+                        <h5 class="card-title m-0">Jumlah Proyek Tahun {{ $selectedYear }}</h5>
                     </div>
                     <div class="card-body" style="height: 400px;">
                         <canvas id="projectMonthlyChart"></canvas>
