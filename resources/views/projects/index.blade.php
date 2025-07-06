@@ -3,15 +3,14 @@
     Project
 @endsection
 @section('content')
-
-@if ($errors->any())
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const modal = new bootstrap.Modal(document.getElementById('createProjectModal'));
-            modal.show();
-        });
-    </script>
-@endif
+    @if ($errors->any())
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                const modal = new bootstrap.Modal(document.getElementById('createProjectModal'));
+                modal.show();
+            });
+        </script>
+    @endif
 
     <div class="container">
         <div class="d-flex justify-content-between align-items-center bg-white mb-4 shadow-sm p-3 rounded flex-wrap gap-2">
@@ -87,11 +86,11 @@
                                     <i class="bi bi-pencil-square"></i>
                                 </button>
                                 <form action="{{ route('projects.destroy', $project->id) }}" method="POST"
-                                    class="d-inline">
+                                    class="d-inline" id="deleteForm">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="btn btn-danger" title="Delete"
-                                        onclick="return confirm('Are you sure you want to delete this project content?')">
+                                    <button type="button" class="btn btn-danger delete-btn" title="Delete"
+                                        data-bs-toggle="modal" data-bs-target="#deleteModal">
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </form>
@@ -129,6 +128,25 @@
                         aria-label="Close"></button>
                 </div>
                 @include('modal.edit-project')
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" data-bs-backdrop="static" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel">Konfirmasi Penghapusan</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Apakah Anda yakin ingin menghapus proyek ini? Tindakan ini tidak dapat dibatalkan.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-danger" id="confirmDelete">Hapus</button>
+                </div>
             </div>
         </div>
     </div>
@@ -250,6 +268,18 @@
                 $(this).find('.invalid-feedback').remove();
             });
         });
-        
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Tangani klik tombol delete
+            document.querySelectorAll('.delete-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    // Set form yang akan di-submit ketika konfirmasi
+                    const form = this.closest('form');
+                    document.getElementById('confirmDelete').onclick = function() {
+                        form.submit();
+                    };
+                });
+            });
+        });
     </script>
 @endpush
