@@ -4,7 +4,7 @@
 @endsection
 @section('content')
     <div class="container">
-        <h2 class="mb-4">Tambah</h2>
+        <h2 class="mb-4">Add</h2>
 
         <form action="{{ route('tasks.store') }}" method="POST">
             @csrf
@@ -29,7 +29,7 @@
                     <span class="text-danger">{{ $message }}</span>
                 @enderror
             </div>
-            <button type="submit" class="btn btn-primary">Tambah</button>
+            <button type="submit" class="btn btn-primary">Save</button>
         </form>
     </div>
 @endsection

@@ -3,6 +3,30 @@
     Project
 @endsection
 @section('content')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    @if (session('success'))
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil',
+            text: '{{ session('success') }}',
+            confirmButtonColor: '#3085d6',
+            timer: 3000,
+            timerProgressBar: true
+        });
+    @elseif (session('error'))
+        Swal.fire({
+            icon: 'error',
+            title: 'Gagal',
+            text: '{{ session('error') }}',
+            confirmButtonColor: '#d33',
+            timer: 4000,
+            timerProgressBar: true
+        });
+    @endif
+</script>
+
     @if ($errors->any())
         <script>
             document.addEventListener("DOMContentLoaded", function() {
@@ -141,11 +165,11 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    Apakah Anda yakin ingin menghapus proyek ini? Tindakan ini tidak dapat dibatalkan.
+                    Are you sure you want to delete this project?
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                    <button type="button" class="btn btn-danger" id="confirmDelete">Hapus</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="confirmDelete">Yes</button>
                 </div>
             </div>
         </div>

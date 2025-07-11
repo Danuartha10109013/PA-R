@@ -22,15 +22,15 @@
                                 <p class="card-text"><strong>Due Date:</strong> {{ $task->due_date }}</p>
                                 <p class="card-text"><strong>Status:</strong>
                                     @if ($task->status == 'publikasi')
-                                        <span class="badge bg-danger">Publikasi</span>
+                                        <span class="badge bg-danger">Publication</span>
                                     @elseif($task->status == 'perencanaan')
-                                        <span class="badge bg-success">Perencanaan</span>
+                                        <span class="badge bg-success">Planning</span>
                                     @elseif($task->status == 'pembuatan')
-                                        <span class="badge bg-primary">Pembuatan</span>
+                                        <span class="badge bg-primary">Production</span>
                                     @elseif($task->status == 'pengeditan')
-                                        <span class="badge bg-info">Pengeditan</span>
+                                        <span class="badge bg-info">Editing</span>
                                     @elseif($task->status == 'peninjauan')
-                                        <span class="badge bg-warning">Peninjauan</span>
+                                        <span class="badge bg-warning">Review</span>
                                     @endif
                                 </p>
 
@@ -210,15 +210,15 @@
                                 <label for="status" class="form-label">Status</label>
                                 <select name="status" id="status" class="form-select" required>
                                     <option value="perencanaan" {{ $task->status == 'perencanaan' ? 'selected' : '' }}>
-                                        Perencanaan</option>
+                                        Planning</option>
                                     <option value="pembuatan" {{ $task->status == 'pembuatan' ? 'selected' : '' }}>
-                                        Pembuatan</option>
+                                        Production</option>
                                     <option value="pengeditan" {{ $task->status == 'pengeditan' ? 'selected' : '' }}>
-                                        Pengeditan</option>
+                                        Editing</option>
                                     <option value="peninjauan" {{ $task->status == 'peninjauan' ? 'selected' : '' }}>
-                                        Peninjauan</option>
+                                        Review</option>
                                     <option value="publikasi" {{ $task->status == 'publikasi' ? 'selected' : '' }}>
-                                        Publikasi</option>
+                                        Publication</option>
                                 </select>
                                 @error('status')
                                     <span class="text-danger">{{ $message }}</span>

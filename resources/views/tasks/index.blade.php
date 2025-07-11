@@ -97,7 +97,7 @@
         <div class="kanban-container">
             <div class="kanban-column">
                 <div class="d-flex justify-content-between bg-success text-white shadow-sm align-items-center px-3 py-2 rounded-top">
-                    <h4 class="text-white fw-bolder m-0">Perencanaan</h4>
+                    <h4 class="text-white fw-bolder m-0">Planning</h4>
                     @if(Auth::user()->isMember() && !Auth::user()->isCeo())
                     <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#createTaskModal"
                         data-status="perencanaan" style="padding-top: 0.5rem; padding-bottom: 0.5rem;">+</button>
@@ -121,7 +121,7 @@
 
             <div class="kanban-column">
                 <div class="d-flex justify-content-between bg-primary text-white shadow-sm align-items-center px-3 py-2 rounded-top">
-                    <h4 class="text-white fw-bolder m-0">Pembuatan</h4>
+                    <h4 class="text-white fw-bolder m-0">Production</h4>
                     @if(Auth::user()->isMember() && !Auth::user()->isCeo())
                     <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#createTaskModal"
                         data-status="pembuatan" style="padding-top: 0.5rem; padding-bottom: 0.5rem;">+</button>
@@ -145,7 +145,7 @@
 
             <div class="kanban-column">
                 <div class="d-flex justify-content-between bg-info text-white shadow-sm align-items-center px-3 py-2 rounded-top">
-                    <h4 class="text-white fw-bolder m-0">Pengeditan</h4>
+                    <h4 class="text-white fw-bolder m-0">Editing</h4>
                     @if(Auth::user()->isMember() && !Auth::user()->isCeo())
                     <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#createTaskModal"
                         data-status="pengeditan" style="padding-top: 0.5rem; padding-bottom: 0.5rem;">+</button>
@@ -169,7 +169,7 @@
 
             <div class="kanban-column">
                 <div class="d-flex justify-content-between bg-warning text-white shadow-sm align-items-center px-3 py-2 rounded-top">
-                    <h4 class="text-white fw-bolder m-0">Peninjauan</h4>
+                    <h4 class="text-white fw-bolder m-0">Review</h4>
                     @if(Auth::user()->isMember() && !Auth::user()->isCeo())
                     <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#createTaskModal"
                         data-status="peninjauan" style="padding-top: 0.5rem; padding-bottom: 0.5rem;">+</button>
@@ -193,7 +193,7 @@
 
             <div class="kanban-column">
                 <div class="d-flex justify-content-between bg-danger text-white shadow-sm align-items-center px-3 py-2 rounded-top">
-                    <h4 class="text-white fw-bolder m-0">Publikasi</h4>
+                    <h4 class="text-white fw-bolder m-0">Publication</h4>
                     @if(Auth::user()->isMember() && !Auth::user()->isCeo())
                     <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#createTaskModal"
                         data-status="publikasi" style="padding-top: 0.5rem; padding-bottom: 0.5rem;">+</button>
@@ -224,7 +224,7 @@
                     <form action="{{ route('projects.tasks.store', $project->id) }}" method="POST">
                         @csrf
                         <div class="modal-header">
-                            <h5 class="modal-title" id="createTaskModalLabel">Tambah Task</h5>
+                            <h5 class="modal-title" id="createTaskModalLabel">Add Task</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                 aria-label="Close"></button>
                         </div>
@@ -254,7 +254,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Tambah</button>
+                            <button type="submit" class="btn btn-primary">Save</button>
                         </div>
                     </form>
                 </div>

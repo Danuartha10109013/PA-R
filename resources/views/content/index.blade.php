@@ -117,7 +117,7 @@
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                    <button type="submit" class="btn btn-primary">Done</button>
+                                                    <button type="submit" class="btn btn-primary">Save</button>
                                                 </div>
                                             </form>
                                         </div>
@@ -167,7 +167,7 @@
                                     </div>
                                 </div>
                                 <div class="card-footer">
-                                    <small class="text-muted">TOPSIS Score: {{ number_format($content->topsis_score, 4) }}</small>
+                                    <small class="text-muted">TOPSIS Score: {{ number_format($content->score, 4) }}</small>
                                 </div>
                             </div>
                         </div>
@@ -227,7 +227,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Done</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
                 </div>
             </form>
         </div>
@@ -238,7 +238,7 @@
 <div class="modal fade" id="deleteConfirmationModal" tabindex="-1" aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header bg-danger text-white">
+            <div class="modal-header bg-primary text-white">
                 <h5 class="modal-title" id="deleteConfirmationModalLabel">Confirmation Delete</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -247,7 +247,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
-                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Yes</button>
+                <button type="button" class="btn btn-primary" id="confirmDeleteBtn">Yes</button>
             </div>
         </div>
     </div>

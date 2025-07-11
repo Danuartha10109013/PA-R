@@ -76,10 +76,10 @@
 
     <div class="d-grid gap-2 mt-4">
         <button type="submit" class="btn btn-primary btn-lg">
-            <i class="bi bi-check-circle me-2"></i>Done
+            <i class="bi bi-check-circle me-2"></i>Save
         </button>
         <a href="{{ route('dashboard') }}" class="btn btn-outline-secondary">
-            <i class="bi bi-arrow-left me-2"></i>Close 
+            <i class="bi bi-arrow-left me-2"></i>Back 
         </a>
     </div>
 </form>

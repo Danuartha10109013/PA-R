@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\ImmediateMail;
+use App\Mail\ScheduledMail;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Project;
 use App\Models\ReminderProject;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator; // Import Validator for manual validation
 
 class ProjectController extends Controller
@@ -87,61 +91,173 @@ class ProjectController extends Controller
         return view('projects.create');
     }
 
+    // public function store(Request $request)
+    // {
+    //     if (Auth::user()->isCeo()) {
+    //         abort(403, 'CEO role cannot create projects.');
+    //     }
+
+    //     $validator = Validator::make($request->all(), [
+    //         'name' => 'required|string|max:255|unique:projects',
+    //         'description' => 'nullable|string',
+    //         'start_date' => 'required|date|after_or_equal:today',
+    //         'end_date' => 'nullable|date|after_or_equal:start_date',
+    //         'status' => 'required|in:not_started,in_progress,completed',
+    //         'budget' => 'nullable|numeric',
+    //     ]);
+
+    //     if ($validator->fails()) {
+    //         if ($request->ajax()) {
+    //             return response()->json([
+    //                 'success' => false,
+    //                 'message' => 'Validation failed',
+    //                 'errors' => $validator->errors()
+    //             ], 422);
+    //         }
+    //         return redirect()->back()->withErrors($validator)->withInput();
+    //     }
+
+    //     try {
+    //         $project = Auth::user()->projects()->create($validator->validated());
+
+    //         $startDate = Carbon::parse($project->start_date);
+    //         $reminderDate = $startDate->subDay();
+
+    //         ReminderProject::create([
+    //             'project_id' => $project->id,
+    //             'user_id' => $project->user_id,
+    //             'reminder_date' => $reminderDate->toDateString(),
+    //         ]);
+
+    //         if ($request->ajax()) {
+    //             return response()->json([
+    //                 'success' => true,
+    //                 'redirect' => route('projects.index')
+    //             ]);
+    //         }
+
+    //         $user = Auth::user();
+    //         $isCEO = $user->isCeo();
+
+    //         // Kirim email langsung ke user
+    //         try {
+    //             Mail::to($user->email)->send(new ImmediateMail($project, $user, $isCEO));
+    //             \Log::info("Email immediate berhasil dikirim ke: " . $user->email);
+    //         } catch (\Exception $e) {
+    //             \Log::error("Gagal kirim email immediate ke {$user->email}: " . $e->getMessage());
+    //         }
+
+    //         // Kirim email terjadwal ke user
+    //         try {
+    //             Mail::to($user->email)
+    //                 ->later(now()->addMinutes(5), new ScheduledMail($project, $user, $isCEO));
+    //             \Log::info("Email scheduled berhasil dijadwalkan untuk: " . $user->email);
+    //         } catch (\Exception $e) {
+    //             \Log::error("Gagal menjadwalkan email ke {$user->email}: " . $e->getMessage());
+    //         }
+
+    //         // Kirim email ke CEO
+    //         $ceos = User::where('role', 'ceo')->get();
+    //         foreach ($ceos as $c) {
+    //             $user = User::find($c->id);
+
+    //             try {
+    //                 Mail::to($user->email)->send(new ImmediateMail($project, $user, true));
+    //                 \Log::info("Email immediate berhasil dikirim ke CEO: " . $user->email);
+    //             } catch (\Exception $e) {
+    //                 \Log::error("Gagal kirim email immediate ke CEO {$user->email}: " . $e->getMessage());
+    //             }
+
+    //             try {
+    //                 Mail::to($user->email)
+    //                     ->later(now()->addMinutes(5), new ScheduledMail($project, $user, true));
+    //                 \Log::info("Email scheduled berhasil dijadwalkan untuk CEO: " . $user->email);
+    //             } catch (\Exception $e) {
+    //                 \Log::error("Gagal menjadwalkan email ke CEO {$user->email}: " . $e->getMessage());
+    //             }
+    //         }
+
+    //         return redirect()->route('projects.index')->with('success', 'Project created successfully and reminder set.');
+    //     } catch (\Exception $e) {
+    //         if ($request->ajax()) {
+    //             return response()->json([
+    //                 'success' => false,
+    //                 'message' => 'Terjadi kesalahan saat membuat project: ' . $e->getMessage()
+    //             ], 500);
+    //         }
+    //         return redirect()->back()->with('error', 'Terjadi kesalahan saat membuat project: ' . $e->getMessage());
+    //     }
+    // }
+
     public function store(Request $request)
-    {
-        if (Auth::user()->isCeo()) {
-            abort(403, 'CEO role cannot create projects.');
-        }
-
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255|unique:projects',
-            'description' => 'nullable|string',
-            'start_date' => 'required|date|after_or_equal:today',
-            'end_date' => 'nullable|date|after_or_equal:start_date',
-            'status' => 'required|in:not_started,in_progress,completed',
-            'budget' => 'nullable|numeric',
-        ]);
-
-        if ($validator->fails()) {
-            if ($request->ajax()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Validation failed',
-                    'errors' => $validator->errors()
-                ], 422);
-            }
-            return redirect()->back()->withErrors($validator)->withInput();
-        }
-
-        try {
-            $project = Auth::user()->projects()->create($validator->validated());
-
-            $startDate = Carbon::parse($project->start_date);
-            $reminderDate = $startDate->subDay();
-
-            ReminderProject::create([
-                'project_id' => $project->id,
-                'user_id' => $project->user_id,
-                'reminder_date' => $reminderDate->toDateString(),
-            ]);
-
-            if ($request->ajax()) {
-                return response()->json([
-                    'success' => true,
-                    'redirect' => route('projects.index')
-                ]);
-            }
-            return redirect()->route('projects.index')->with('success', 'Project created successfully and reminder set.');
-        } catch (\Exception $e) {
-            if ($request->ajax()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Terjadi kesalahan saat membuat project: ' . $e->getMessage()
-                ], 500);
-            }
-            return redirect()->back()->with('error', 'Terjadi kesalahan saat membuat project: ' . $e->getMessage());
-        }
+{
+    if (Auth::user()->isCeo()) {
+        abort(403, 'CEO role cannot create projects.');
     }
+
+    $validator = Validator::make($request->all(), [
+        'name' => 'required|string|max:255|unique:projects',
+        'description' => 'nullable|string',
+        'start_date' => 'required|date|after_or_equal:today',
+        'end_date' => 'nullable|date|after_or_equal:start_date',
+        'status' => 'required|in:not_started,in_progress,completed',
+        'budget' => 'nullable|numeric',
+    ]);
+
+    if ($validator->fails()) {
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+        return redirect()->back()->withErrors($validator)->withInput();
+    }
+
+    $project = Auth::user()->projects()->create($validator->validated());
+
+    $startDate = Carbon::parse($project->start_date);
+    $reminderDate = $startDate->subDay();
+
+    ReminderProject::create([
+        'project_id' => $project->id,
+        'user_id' => $project->user_id,
+        'reminder_date' => $reminderDate->toDateString(),
+    ]);
+
+    $user = Auth::user();
+    $isCEO = $user->isCeo();
+
+    // Kirim email langsung ke user
+    Mail::to($user->email)->send(new ImmediateMail($project, $user, $isCEO));
+
+    // Kirim email terjadwal ke user
+    // Mail::to($user->email)
+    //     ->later(now()->addMinutes(1), new ScheduledMail($project, $user, $isCEO));
+    $scheduledDate = Carbon::parse($project->end_date)->subDay();
+
+    // Kirim email satu hari sebelum deadline
+    Mail::to($user->email)
+        ->later($scheduledDate, new ScheduledMail($project, $user, $isCEO));
+    // Kirim email ke semua CEO
+    $ceos = User::where('role', 'ceo')->get();
+    foreach ($ceos as $ceoUser) {
+        $user = User::find($ceoUser->id);
+        Mail::to($user->email)->send(new ImmediateMail($project, $user, true));
+        Mail::to($user->email)
+            ->later($scheduledDate, new ScheduledMail($project, $user, $isCEO));
+    }
+
+    if ($request->ajax()) {
+        return response()->json([
+            'success' => true,
+            'redirect' => route('projects.index')
+        ]);
+    }
+
+    return redirect()->route('projects.index')->with('success', 'Project created and emails sent.');
+}
 
     public function show(Project $project)
     {

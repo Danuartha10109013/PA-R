@@ -22,8 +22,8 @@
                     </div>
                 </div>
 
-                <button class="btn btn-success">Done</button>
-                <a href="{{ route('KelolaUser.index') }}" class="btn btn-secondary">Close</a>
+                <button class="btn btn-success">Save</button>
+                <a href="{{ route('KelolaUser.index') }}" class="btn btn-secondary">Back</a>
         </form>
     </div>
 
