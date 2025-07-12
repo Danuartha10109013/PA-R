@@ -54,10 +54,10 @@
 
         @if (auth()->user()->isMember())
             <!-- Tombol trigger modal -->
-            <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal"
+            {{-- <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal"
                 data-bs-target="#confirmReminderModal">
                 <i class="bi bi-envelope"></i> Kirim Reminder Proyek (Manual)
-            </button>
+            </button> --}}
 
             <!-- Modal -->
             <div class="modal fade" id="confirmReminderModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="confirmReminderLabel"

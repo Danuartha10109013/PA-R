@@ -36,13 +36,35 @@
                                 data-role="{{ $user->role }}" data-bs-toggle="modal" data-bs-target="#modalEditUser">
                                 Edit
                             </button>
-                            <form action="{{ route('KelolaUser.destroy', $user->id) }}" method="POST"
-                                style="display:inline;">
-                                @csrf
-                                @method('DELETE')
-                                <button class="btn btn-sm btn-danger"
-                                    onclick="return confirm('Hapus user ini?')">Delete</button>
-                            </form>
+                            <!-- Tombol untuk membuka modal -->
+                            <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#modalDelete{{ $user->id }}">
+                                Delete
+                            </button>
+
+                            <!-- Modal per user -->
+                            <div class="modal fade" id="modalDelete{{ $user->id }}" tabindex="-1" aria-labelledby="modalLabel{{ $user->id }}" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                <form action="{{ route('KelolaUser.destroy', $user->id) }}" method="POST">
+                                    @csrf
+                                    @method('DELETE')
+                                    <div class="modal-header">
+                                    <h5 class="modal-title" id="modalLabel{{ $user->id }}">Konfirmasi Hapus</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                    Apakah Anda yakin ingin menghapus user <strong>{{ $user->name }}</strong>?
+                                    </div>
+                                    <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                    <button type="submit" class="btn btn-danger">Hapus</button>
+                                    </div>
+                                </form>
+                                </div>
+                            </div>
+                            </div>
+
+
                         </td>
                     </tr>
                 @endforeach

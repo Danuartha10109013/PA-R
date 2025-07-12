@@ -32,6 +32,7 @@ class ProjectController extends Controller
 
     public function index()
     {
+        // dd(request('status'));
         if (Auth::user()->isCeo()) {
             $projects = Project::with('tasks')
                 ->withCount([

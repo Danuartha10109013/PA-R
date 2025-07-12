@@ -80,7 +80,9 @@
                             <p class="card-text">{{ $project->description }}</p>
                             <p class="card-text">
                                 <strong>Status:</strong>
-                                {{ $project->status == 'pending' ? 'Pending' : ($project->status == 'on_going' ? 'In Progress' : 'Completed') }}<br>
+                                {{ $project->status === 'pending' ? 'Pending' : ($project->status === 'on_going' ? 'In Progress' : ($project->status === 'unfinished' ? 'Unfinished' : ($project->status === 'finished' ? 'Completed' : 'Unknown'))) }} <br>
+
+                                {{-- {{ $project->status == 'pending' ? 'Pending' : ($project->status == 'on_going' ? 'In Progress' : 'Completed') }}<br> --}}
                                 <strong>Deadline:</strong>
                                 @if ($project->end_date && $project->end_date->isFuture())
                                     {{ $project->end_date->diffForHumans() }}
