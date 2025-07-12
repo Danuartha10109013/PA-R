@@ -44,7 +44,7 @@
                 {{-- Form Filter --}}
                 <form method="GET" action="{{ route('projects.index') }}">
                     <select name="status" class="form-select" onchange="this.form.submit()">
-                        <option value="">Semua Status</option>
+                        <option value="all">Semua Status</option>
                         <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
                         <option value="on_going" {{ request('status') == 'on_going' ? 'selected' : '' }}>In Progress
                         </option>

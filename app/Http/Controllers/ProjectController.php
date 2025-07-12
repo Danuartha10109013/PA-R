@@ -66,7 +66,7 @@ class ProjectController extends Controller
         $statusCounts = $projects->groupBy('status')->map->count();
 
         // ✅ Filter jika ada parameter ?status=
-        if (request()->has('status') && request('status') !== '') {
+        if (request()->has('status') && request('status') !== 'all') {
             $projects = $projects->filter(fn($project) => $project->status === request('status'))->values();
         }
 
