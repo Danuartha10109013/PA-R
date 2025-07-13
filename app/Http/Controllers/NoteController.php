@@ -24,8 +24,8 @@ class NoteController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required|string',
-            'date' => 'nullable|date',
-            'time' => 'nullable|date_format:H:i',
+            'date' => 'required|date',
+            'time' => 'required|date_format:H:i',
         ]);
 
         Auth::user()->notes()->create($request->all());
@@ -43,8 +43,8 @@ class NoteController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required|string',
-            'date' => 'nullable|date',
-            'time' => 'nullable|date_format:H:i',
+            'date' => 'required|date',
+            'time' => 'required|date_format:H:i',
         ]);
 
         $note->update($request->all());

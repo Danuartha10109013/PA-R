@@ -114,10 +114,10 @@ class ContentController extends Controller
     {
         $validated = $request->validate([
             'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'views' => 'nullable|integer|min:0',
-            'likes' => 'nullable|integer|min:0',
-            'comments' => 'nullable|integer|min:0',
+            'description' => 'required|string',
+            'views' => 'required|integer|min:0',
+            'likes' => 'required|integer|min:0',
+            'comments' => 'required|integer|min:0',
         ]);
 
         // Set default values for metrics if not provided

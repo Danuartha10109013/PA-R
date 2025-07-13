@@ -127,7 +127,7 @@ class ReminderController extends Controller
     {
         $validated = $request->validate([
             'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
+            'description' => 'required|string',
             'date' => 'required|date',
             'time' => 'required|date_format:H:i',
         ]);

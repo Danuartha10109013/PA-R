@@ -40,8 +40,8 @@ class TaskController extends Controller
 
         $request->validate([
             'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'due_date' => 'nullable|date',
+            'description' => 'required|string',
+            'due_date' => 'required|date',
             'status' => 'required|string'
         ]);
 
@@ -62,8 +62,8 @@ class TaskController extends Controller
     {
         $request->validate([
             'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'due_date' => 'nullable|date',
+            'description' => 'required|string',
+            'due_date' => 'required|date',
             'status' => 'required|in:perencanaan,pembuatan,pengeditan,peninjauan,publikasi',
         ]);
 
