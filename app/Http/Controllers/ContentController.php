@@ -18,6 +18,7 @@ class ContentController extends Controller
 
     public function index()
 {
+    //ini yang buat spk disini semua , ga pake lagi yang di folder Algorithms
     // 1. Ambil 3 konten terakhir sesuai file
     $contents = \App\Models\Content::orderBy('created_at', 'desc')->get();
 
@@ -302,6 +303,7 @@ class ContentController extends Controller
 
 public function topsis()
 {
+    //ini juga buat yang topsis, buat nampilin pehitungann nya, step stepnya sama kaya yang tadi
     $contents = \App\Models\Content::orderBy('created_at', 'desc')->get();
 
     if ($contents->isEmpty()) {

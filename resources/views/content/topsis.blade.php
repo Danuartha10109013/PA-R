@@ -1,26 +1,62 @@
 @extends('layouts.app')
 
 @section('content')
+ {{-- ✅ Bootstrap 5 CSS --}}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    {{-- ✅ Optional: Bootstrap Icons (jika kamu butuh icon) --}}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+<style>
+    thead {
+        background-color: #032b54 !important;
+        color: white !important;
+    }
+
+     .bg-primary {
+        background-color: #032b54 !important;
+    }
+
+    table th,
+    table td {
+        vertical-align: center !important;
+    }
+
+    .table-responsive {
+        margin-bottom: 2rem;
+    }
+
+    h4 {
+        font-weight: bold;
+        margin-top: 2rem;
+        color: #007bff;
+    }
+
+    ol.fw-bold li {
+        margin-bottom: 5px;
+    }
+</style>
+
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">Perhitungan Metode TOPSIS</h3>
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="card-title mb-0 text-center">Hasil Perhitungan Metode TOPSIS</h3>
                 </div>
-                <div class="card-body">
+                <div class="card-body p-4">
 
-                    <!-- 1. Matriks Keputusan -->
+                    {{-- 1. Matriks Keputusan --}}
                     <h4>1. Matriks Keputusan</h4>
-                    <div class="table-responsive mb-4">
+                    <div class="table-responsive">
                         <table class="table table-bordered">
                             <thead class="bg-primary text-white">
                                 <tr>
-                                    <th>No</th>
-                                    <th>Alternatif</th>
-                                    <th>Likes</th>
-                                    <th>Comments</th>
-                                    <th>Views</th>
+                                    <th class="bg-primary text-white text-center">No</th>
+                                    <th class="bg-primary text-white text-center">Alternatif</th>
+                                    <th class="bg-primary text-white text-center">Likes</th>
+                                    <th class="bg-primary text-white text-center">Comments</th>
+                                    <th class="bg-primary text-white text-center">Views</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -37,16 +73,16 @@
                         </table>
                     </div>
 
-                    <!-- 2. Pembagi Normalisasi -->
+                    {{-- 2. Nilai Pembagi --}}
                     <h4>2. Nilai Pembagi (Akar Kuadrat Jumlah Kuadrat)</h4>
-                    <div class="table-responsive mb-4">
+                    <div class="table-responsive">
                         <table class="table table-bordered">
-                            <thead class="bg-primary text-white">
+                            <thead>
                                 <tr>
-                                    <th>Kriteria</th>
-                                    <th class="text-center">Likes</th>
-                                    <th class="text-center">Comments</th>
-                                    <th class="text-center">Views</th>
+                                    <th class="bg-primary text-white text-center text-center">Kriteria</th>
+                                    <th class="bg-primary text-white text-center text-center">Likes</th>
+                                    <th class="bg-primary text-white text-center text-center">Comments</th>
+                                    <th class="bg-primary text-white text-center text-center">Views</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -60,17 +96,17 @@
                         </table>
                     </div>
 
-                    <!-- 3. Matriks Ternormalisasi -->
+                    {{-- 3. Matriks Ternormalisasi --}}
                     <h4>3. Matriks Ternormalisasi</h4>
-                    <div class="table-responsive mb-4">
+                    <div class="table-responsive">
                         <table id="normalizedTable" class="table table-bordered table-hover">
-                            <thead class="bg-primary text-white">
+                            <thead>
                                 <tr>
-                                    <th>No</th>
-                                    <th>Alternatif</th>
-                                    <th>Likes</th>
-                                    <th>Comments</th>
-                                    <th>Views</th>
+                                    <th class="bg-primary text-white text-center">No</th>
+                                    <th class="bg-primary text-white text-center">Alternatif</th>
+                                    <th class="bg-primary text-white text-center">Likes</th>
+                                    <th class="bg-primary text-white text-center">Comments</th>
+                                    <th class="bg-primary text-white text-center">Views</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -87,17 +123,17 @@
                         </table>
                     </div>
 
-                    <!-- 4. Matriks Terbobot -->
+                    {{-- 4. Matriks Terbobot --}}
                     <h4>4. Matriks Ternormalisasi Terbobot</h4>
-                    <div class="table-responsive mb-4">
+                    <div class="table-responsive">
                         <table id="weightedTable" class="table table-bordered table-hover">
-                            <thead class="bg-primary text-white">
+                            <thead>
                                 <tr>
-                                    <th>No</th>
-                                    <th>Alternatif</th>
-                                    <th>Likes (V1)</th>
-                                    <th>Comments (V2)</th>
-                                    <th>Views (V3)</th>
+                                    <th class="bg-primary text-white text-center">No</th>
+                                    <th class="bg-primary text-white text-center">Alternatif</th>
+                                    <th class="bg-primary text-white text-center">Likes (V1)</th>
+                                    <th class="bg-primary text-white text-center">Comments (V2)</th>
+                                    <th class="bg-primary text-white text-center">Views (V3)</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -114,17 +150,17 @@
                         </table>
                     </div>
 
-                    <!-- 5. Solusi Ideal -->
+                    {{-- 5. Solusi Ideal --}}
                     <h4>5. Solusi Ideal Positif (A⁺) dan Negatif (A⁻)</h4>
-                    <div class="table-responsive mb-4">
+                    <div class="table-responsive">
                         <table class="table table-bordered">
-                            <thead class="bg-primary text-white">
+                            <thead>
                                 <tr>
-                                    <th>No</th>
-                                    <th>Solusi</th>
-                                    <th>Likes</th>
-                                    <th>Comments</th>
-                                    <th>Views</th>
+                                    <th class="bg-primary text-white text-center">No</th>
+                                    <th class="bg-primary text-white text-center">Solusi</th>
+                                    <th class="bg-primary text-white text-center">Likes</th>
+                                    <th class="bg-primary text-white text-center">Comments</th>
+                                    <th class="bg-primary text-white text-center">Views</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -146,16 +182,16 @@
                         </table>
                     </div>
 
-                    <!-- 6. Jarak Solusi Ideal -->
+                    {{-- 6. Jarak Solusi Ideal --}}
                     <h4>6. Jarak terhadap Solusi Ideal Positif dan Negatif</h4>
-                    <div class="table-responsive mb-4">
+                    <div class="table-responsive">
                         <table id="measuresTable" class="table table-bordered table-hover">
-                            <thead class="bg-primary text-white">
+                            <thead>
                                 <tr>
-                                    <th>No</th>
-                                    <th>Alternatif</th>
-                                    <th>Jarak ke A⁺ (D⁺)</th>
-                                    <th>Jarak ke A⁻ (D⁻)</th>
+                                    <th class="bg-primary text-white text-center">No</th>
+                                    <th class="bg-primary text-white text-center">Alternatif</th>
+                                    <th class="bg-primary text-white text-center">Jarak ke A⁺ (D⁺)</th>
+                                    <th class="bg-primary text-white text-center">Jarak ke A⁻ (D⁻)</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -171,15 +207,15 @@
                         </table>
                     </div>
 
-                    <!-- 7. Nilai Preferensi (Closeness Coefficient) -->
+                    {{-- 7. Nilai Preferensi (Ci) --}}
                     <h4>7. Nilai Preferensi (Ci)</h4>
-                    <div class="table-responsive mb-4">
+                    <div class="table-responsive">
                         <table id="closenessTable" class="table table-bordered table-hover">
-                            <thead class="bg-primary text-white">
+                            <thead>
                                 <tr>
-                                    <th>No</th>
-                                    <th>Alternatif</th>
-                                    <th>Nilai Ci</th>
+                                    <th class="bg-primary text-white text-center">No</th>
+                                    <th class="bg-primary text-white text-center">Alternatif</th>
+                                    <th class="bg-primary text-white text-center">Nilai Ci</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -194,7 +230,7 @@
                         </table>
                     </div>
 
-                    <!-- 8. Hasil Akhir: Ranking -->
+                    {{-- 8. Ranking Akhir --}}
                     <h4>8. Ranking Hasil Akhir</h4>
                     <ol class="fw-bold">
                         @foreach($results as $result)

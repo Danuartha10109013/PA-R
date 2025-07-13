@@ -192,6 +192,7 @@ class ProjectController extends Controller
 
     public function store(Request $request)
 {
+    //ini function store sama kirim email nya
     if (Auth::user()->isCeo()) {
         abort(403, 'CEO role cannot create projects.');
     }
@@ -234,13 +235,16 @@ class ProjectController extends Controller
     Mail::to($user->email)->send(new ImmediateMail($project, $user, $isCEO));
 
     // Kirim email terjadwal ke user
-    // Mail::to($user->email)
-    //     ->later(now()->addMinutes(1), new ScheduledMail($project, $user, $isCEO));
-    $scheduledDate = Carbon::parse($project->end_date)->subDay();
+    $scheduledDate = Carbon::parse($project->end_date)->subDay(); 
 
-    // Kirim email satu hari sebelum deadline
     Mail::to($user->email)
-        ->later($scheduledDate, new ScheduledMail($project, $user, $isCEO));
+        ->later(now()->addMinutes(1), new ScheduledMail($project, $user, $isCEO));
+    //kalo tar mau nyobain demo, jeda waktu 1 menit nyalain 2 baris atas
+    
+    // Kirim email satu hari sebelum deadline nah kalo gini tar si email yang remindernya kekirim  1 hari sebelum end date
+    Mail::to($user->email)
+        ->later($scheduledDate, new ScheduledMail($project, $user, $isCEO)); //yang ini matiin
+
     // Kirim email ke semua CEO
     $ceos = User::where('role', 'ceo')->get();
     foreach ($ceos as $ceoUser) {
