@@ -180,7 +180,7 @@
 </div>
 
 <!-- Create Content Modal -->
-<div class="modal fade" id="createContentModal" tabindex="-1" aria-labelledby="createContentModalLabel" aria-hidden="true">
+<div class="modal fade @if($errors->any()) show d-block @endif" id="createContentModal" tabindex="-1" aria-labelledby="createContentModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <form action="{{ route('content.store') }}" method="POST">
@@ -189,42 +189,68 @@
                     <h5 class="modal-title" id="createContentModalLabel">Add data content</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
+
                 <div class="modal-body">
+                    {{-- Title --}}
                     <div class="mb-3">
                         <label for="title" class="form-label">Title</label>
-                        <input type="text" class="form-control" id="title" name="title" required>
+                        <input type="text" class="form-control @error('title') is-invalid @enderror" id="title" name="title" value="{{ old('title') }}">
+                        @error('title')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
+
+                    {{-- Description --}}
                     <div class="mb-3">
                         <label for="description" class="form-label">Description</label>
-                        <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+                        <textarea class="form-control @error('description') is-invalid @enderror" id="description" name="description" rows="3">{{ old('description') }}</textarea>
+                        @error('description')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
+
                     <div class="row">
+                        {{-- Likes --}}
                         <div class="col-md-4">
                             <div class="mb-3">
                                 <label for="likes" class="form-label">
                                     <i class="bi bi-hand-thumbs-up"></i> Likes
                                 </label>
-                                <input type="number" class="form-control" id="likes" name="likes" min="0" value="0">
+                                <input type="number" class="form-control @error('likes') is-invalid @enderror" id="likes" name="likes" min="0" value="{{ old('likes') }}">
+                                @error('likes')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
                         </div>
+
+                        {{-- Comments --}}
                         <div class="col-md-4">
                             <div class="mb-3">
                                 <label for="comments" class="form-label">
                                     <i class="bi bi-chat-text"></i> Comments
                                 </label>
-                                <input type="number" class="form-control" id="comments" name="comments" min="0" value="0">
+                                <input type="number" class="form-control @error('comments') is-invalid @enderror" id="comments" name="comments" min="0" value="{{ old('comments') }}">
+                                @error('comments')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
                         </div>
+
+                        {{-- Views --}}
                         <div class="col-md-4">
                             <div class="mb-3">
                                 <label for="views" class="form-label">
                                     <i class="bi bi-eye"></i> Views
                                 </label>
-                                <input type="number" class="form-control" id="views" name="views" min="0" value="0">
+                                <input type="number" class="form-control @error('views') is-invalid @enderror" id="views" name="views" min="0" value="{{ old('views') }}">
+                                @error('views')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
                         </div>
                     </div>
                 </div>
+
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-primary">Save</button>
@@ -233,6 +259,15 @@
         </div>
     </div>
 </div>
+@if ($errors->any())
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var modal = new bootstrap.Modal(document.getElementById('createContentModal'));
+        modal.show();
+    });
+</script>
+@endif
+
 
 <!-- Delete Confirmation Modal -->
 <div class="modal fade" id="deleteConfirmationModal" tabindex="-1" aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true">
