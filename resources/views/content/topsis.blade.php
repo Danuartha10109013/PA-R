@@ -14,7 +14,7 @@
     }
 
      .bg-primary {
-        background-color: #032b54 !important;
+        background-color: #116cfc !important;
     }
 
     table th,
@@ -29,7 +29,7 @@
     h4 {
         font-weight: bold;
         margin-top: 2rem;
-        color: #007bff;
+        color: black;
     }
 
     ol.fw-bold li {
@@ -231,12 +231,12 @@
                     </div>
 
                     {{-- 8. Ranking Akhir --}}
-                    <h4>8. Ranking Hasil Akhir</h4>
+                    {{-- <h4>8. Ranking Hasil Akhir</h4>
                     <ol class="fw-bold">
                         @foreach($results as $result)
                         <li>{{ $result['alternative'] }} (Ci = {{ number_format($result['score'], 4) }})</li>
                         @endforeach
-                    </ol>
+                    </ol> --}}
 
                 </div>
             </div>
