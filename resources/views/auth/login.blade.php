@@ -93,10 +93,10 @@
                             </div>
 
 
-                            <div class="mb-3 form-check">
+                            {{-- <div class="mb-3 form-check">
                                 <input type="checkbox" name="remember" id="remember" class="form-check-input">
                                 <label for="remember" class="form-check-label">Remember Me</label>
-                            </div>
+                            </div> --}}
                             <div class="d-grid mb-4">
                                 <button type="submit" class="btn btn-primary">Login</button>
                             </div>

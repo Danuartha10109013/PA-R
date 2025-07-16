@@ -96,10 +96,10 @@
                                 title="View Tasks">
                                 <i class="bi bi-list"></i>
                             </a>
-                            <a href="{{ route('projects.show', $project->id) }}" class="btn btn-primary"
+                            {{-- <a href="{{ route('projects.show', $project->id) }}" class="btn btn-primary"
                                 title="View Details">
                                 <i class="bi bi-eye"></i>
-                            </a>
+                            </a> --}}
 
                             {{-- Show edit and delete buttons only to members --}}
                             @if (Auth::user() && Auth::user()->isMember() && !Auth::user()->isCeo())

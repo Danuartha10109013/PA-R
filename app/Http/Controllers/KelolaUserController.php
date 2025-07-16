@@ -36,7 +36,7 @@ class KelolaUserController extends Controller
             'phone_number' => $request->phone_number // Add if needed
         ]);
 
-        return redirect()->route('KelolaUser.index')->with('success', 'User berhasil ditambahkan');
+        return redirect()->route('KelolaUser.index')->with('success', 'User added successfully');
     }
 
     public function edit($id)
@@ -69,12 +69,12 @@ class KelolaUserController extends Controller
 
         $user->save();
 
-        return redirect()->route('KelolaUser.index')->with('success', 'User berhasil diperbarui');
+        return redirect()->route('KelolaUser.index')->with('success', 'User successfully updated');
     }
 
     public function destroy($id)
     {
         User::findOrFail($id)->delete();
-        return redirect()->route('KelolaUser.index')->with('success', 'User berhasil dihapus');
+        return redirect()->route('KelolaUser.index')->with('success', 'User successfully deleted');
     }
 }

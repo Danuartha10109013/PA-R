@@ -12,6 +12,7 @@
         <table class="table table-bordered">
             <thead>
                 <tr>
+                    {{-- <th>No</th> --}}
                     <th>Name</th>
                     <th>Email</th>
                     <th>Role</th>
@@ -21,6 +22,7 @@
             <tbody>
                 @foreach ($users as $user)
                     <tr>
+                        {{-- <td>{{ $loop->iteration }}</td> --}}
                         <td>{{ $user->name }}</td>
                         <td>{{ $user->email }}</td>
                         <td>
@@ -49,15 +51,15 @@
                                     @csrf
                                     @method('DELETE')
                                     <div class="modal-header">
-                                    <h5 class="modal-title" id="modalLabel{{ $user->id }}">Konfirmasi Hapus</h5>
+                                    <h5 class="modal-title" id="modalLabel{{ $user->id }}">Confirmation Delete</h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
                                     </div>
                                     <div class="modal-body">
-                                    Apakah Anda yakin ingin menghapus user <strong>{{ $user->name }}</strong>?
+                                    Are you sure you want to delete the user <strong>{{ $user->name }}</strong>?
                                     </div>
                                     <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                                    <button type="submit" class="btn btn-danger">Hapus</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                    <button type="submit" class="btn btn-primary">Yes</button>
                                     </div>
                                 </form>
                                 </div>
@@ -112,8 +114,7 @@
                         </div> --}}
                     </div>
                     <div class="modal-footer">
-                        <button class="btn btn-success">Done</button>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button class="btn btn-success">Save</button>
                     </div>
                 </div>
             </form>
@@ -142,7 +143,7 @@
                             <input type="email" name="email" id="edit_email" class="form-control" required>
                         </div>
                         <div class="mb-3">
-                            <label>New Password (kosongkan jika tidak ingin mengganti)</label>
+                            <label>New Password (leave blank if you don't want to replace)</label>
                             <div class="input-group">
                                 <input type="password" name="password" class="form-control" id="password_edit">
                                 <button type="button" class="btn btn-outline-secondary" id="togglePassword_edit">
@@ -160,8 +161,8 @@
                         </div>
                     </div> --}}
                     <div class="modal-footer">
-                        <button class="btn btn-primary">Done</button>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button class="btn btn-primary">Save</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                     </div>
                 </div>
             </form>
@@ -171,40 +172,36 @@
 
 @push('scripts')
     <script>
-        // Toggle password Create
-        document.getElementById('togglePassword_create').addEventListener('click', function() {
-            const pass = document.getElementById('password_create');
-            const type = pass.getAttribute('type') === 'password' ? 'text' : 'password';
-            pass.setAttribute('type', type);
-            this.innerHTML = type === 'password' ? '<i class="bi bi-eye"></i>' : '<i class="bi bi-eye-slash"></i>';
-        });
-
         // Toggle password Edit
-        document.getElementById('togglePassword_edit').addEventListener('click', function() {
-            const pass = document.getElementById('password_edit');
-            const type = pass.getAttribute('type') === 'password' ? 'text' : 'password';
-            pass.setAttribute('type', type);
-            this.innerHTML = type === 'password' ? '<i class="bi bi-eye"></i>' : '<i class="bi bi-eye-slash"></i>';
-        });
+document.getElementById('togglePassword_edit').addEventListener('click', function() {
+    const pass = document.getElementById('password_edit');
+    const type = pass.getAttribute('type') === 'password' ? 'text' : 'password';
+    pass.setAttribute('type', type);
+    this.innerHTML = type === 'password' ? '<i class="bi bi-eye"></i>' : '<i class="bi bi-eye-slash"></i>';
+});
 
-        // Fill modal Edit
-        document.querySelectorAll('.btn-edit').forEach(button => {
-            button.addEventListener('click', function() {
-                const id = this.dataset.id;
-                const name = this.dataset.name;
-                const email = this.dataset.email;
-                const role = this.dataset.role;
+// Fill modal Edit
+document.querySelectorAll('.btn-edit').forEach(button => {
+    button.addEventListener('click', function () {
+        const id = this.dataset.id;
+        const name = this.dataset.name;
+        const email = this.dataset.email;
+        const role = this.dataset.role;
 
-                document.getElementById('edit_name').value = name;
-                document.getElementById('edit_email').value = email;
+        document.getElementById('edit_name').value = name;
+        document.getElementById('edit_email').value = email;
+        document.getElementById('password_edit').value = ''; // Kosongkan input password saat edit
 
-                // Set nilai role
-                const roleSelect = document.getElementById('edit_role');
-                roleSelect.value = role;
+        // Set nilai role jika select tersedia
+        const roleSelect = document.getElementById('edit_role');
+        if (roleSelect) {
+            roleSelect.value = role;
+        }
 
-                const form = document.getElementById('formEditUser');
-                form.action = `/KelolaUser/${id}`;
-            });
-        });
+        const form = document.getElementById('formEditUser');
+        form.action = `/KelolaUser/${id}`;
+    });
+});
+
     </script>
 @endpush
