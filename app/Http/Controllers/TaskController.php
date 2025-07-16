@@ -1,10 +1,17 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Jobs\SendTaskReminder;
+use App\Mail\TaskNewMail;
+use App\Mail\TaskScheduledMail;
+use App\Models\NotificationM;
 use App\Models\Project;
 use App\Models\Task;
+use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 class TaskController extends Controller
 {
@@ -47,9 +54,54 @@ class TaskController extends Controller
 
         $data = $request->all();
         $data['user_id'] = Auth::id(); // Set the user_id to the authenticated user
+        $user = Auth::user();
+        $isCEO = $user->isCeo();
 
-        $project->tasks()->create($data);
+        
+        $task = $project->tasks()->create($data);
 
+        $notif = new NotificationM();
+        $notif->title = 'Task Baru telah ditambahkan '. $request->title;
+        $notif->content = 'Task telah ditambahkan oleh ' . Auth::user()->name . 'dengan deadline pada ' . $request->due_date;
+        $notif->status_ceo = 0;
+        $notif->status_marketing = 0;
+        $notif->user_id = Auth::user()->id;
+        $notif->projects_id = $project->id;
+        $notif->tasks_id = $task->id;
+        $notif->save();
+
+        SendTaskReminder::dispatch($task)->delay(
+            \Carbon\Carbon::parse($task->due_date)->subDay()
+        );
+
+
+        // dd($task);
+        // Kirim email langsung ke user
+        Mail::to($user->email)->send(new TaskNewMail($task, $user, $isCEO)); //ygini
+
+        // // Kirim email terjadwal ke user
+
+        // Mail::to($user->email)
+        //     ->later(now()->addMinutes(1), new ScheduledMail($task, $user, $isCEO));
+        //kalo tar mau nyobain demo, jeda waktu 1 menit nyalain 2 baris atas
+        // Kirim email satu hari sebelum deadline nah kalo gini tar si email yang remindernya kekirim  1 hari sebelum end date
+        if ($task->due_date) {
+            $scheduledDate = Carbon::parse($task->due_date)->subDay();
+
+            Mail::to($user->email)
+                ->later($scheduledDate, new TaskScheduledMail($task, $user, $isCEO));
+        }
+        
+        // // Kirim email ke semua CEO
+        $ceos = User::where('role', 'ceo')->get();
+        foreach ($ceos as $ceoUser) {
+            $user = User::find($ceoUser->id);
+            Mail::to($user->email)->send(new TaskNewMail($task, $user, true));
+            Mail::to($user->email)
+                ->later($scheduledDate, new TaskScheduledMail($task, $user, $isCEO));
+        }
+        // dd($ceos);
+        // SendTaskReminder::dispatch($task)->delay(now()->addMinutes(1));
         return redirect()->route('projects.tasks.index', $project)->with('success', 'Task created successfully.');
     }
 

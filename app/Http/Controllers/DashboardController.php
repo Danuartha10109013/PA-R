@@ -7,6 +7,7 @@ use App\Models\File;
 use App\Models\Note;
 use App\Models\Task;
 use App\Models\Content;
+use App\Models\NotificationM;
 use App\Models\Project;
 use App\Models\Routine;
 use App\Models\Reminder;
@@ -15,6 +16,51 @@ use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
+    public function handleMarketing(Request $request)
+    {
+        $ids = $request->input('notif_ids', []);
+        $action = $request->input('action');
+
+        if (empty($ids)) {
+            return back()->with('error', 'Tidak ada notifikasi yang dipilih.');
+        }
+
+        if ($action === 'read') {
+            NotificationM::whereIn('id', $ids)->update(['status_marketing' => 1]);
+            return back()->with('success', 'Notifikasi marketing ditandai sebagai dibaca.');
+        }
+
+        if ($action === 'delete') {
+            NotificationM::whereIn('id', $ids)->update(['status_marketing' => 3]);
+            return back()->with('success', 'Notifikasi marketing berhasil dihapus.');
+        }
+
+        return back()->with('error', 'Aksi tidak dikenali.');
+    }
+
+    public function handleCeo(Request $request)
+    {
+        $ids = $request->input('notif_ids', []);
+        $action = $request->input('action');
+
+        if (empty($ids)) {
+            return back()->with('error', 'Tidak ada notifikasi yang dipilih.');
+        }
+
+        if ($action === 'read') {
+            NotificationM::whereIn('id', $ids)->update(['status_ceo' => 1]);
+            return back()->with('success', 'Notifikasi CEO ditandai sebagai dibaca.');
+        }
+
+        if ($action === 'delete') {
+            NotificationM::whereIn('id', $ids)->update(['status_ceo' => 3]);
+            return back()->with('success', 'Notifikasi CEO berhasil dihapus.');
+        }
+
+        return back()->with('error', 'Aksi tidak dikenali.');
+    }
+
+
     public function index()
     {
         $user = Auth::user();

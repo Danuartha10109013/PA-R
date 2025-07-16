@@ -245,7 +245,8 @@
                             </div>
                             <div class="mb-3">
                                 <label for="due_date" class="form-label">Due Date</label>
-                                <input type="date" name="due_date" id="due_date" class="form-control">
+                                <input type="date" name="due_date" id="due_date" min="{{ \Carbon\Carbon::parse($project->start_date)->toDateString() }}" max="{{ \Carbon\Carbon::parse($project->end_date)->toDateString() }}" class="form-control">
+
                                 @error('due_date')
                                     <span class="text-danger">{{ $message }}</span>
                                 @enderror

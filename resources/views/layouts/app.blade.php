@@ -223,13 +223,109 @@
                     <a class="navbar-brand" href="{{ route('dashboard') }}">
                         <span class="fw-normal" id="currentDateTime"></span>
                     </a>
+                
+
+
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                         data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false"
                         aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
                     <div class="collapse navbar-collapse justify-content-end" id="navbarNavDropdown">
-                        <ul class="navbar-nav">
+                        <ul class="navbar-nav" style="margin-top: 20px">
+                                @php
+                                    $notif_marketing = \App\Models\NotificationM::where('status_marketing', '<=', 1)->orderBy('created_at','desc')->get();
+                                    $notif_ceo = \App\Models\NotificationM::where('status_ceo', '<=', 1)->orderBy('created_at','desc')->get();
+                                    $totalUnread = $notif_marketing->where('status_marketing', 0)->count() + $notif_ceo->where('status_ceo', 0)->count();
+                                @endphp
+
+                            <!-- Notifikasi Dropdown -->
+                            <li class="nav-item" style="">
+
+                                <div class="dropdown nav-item" style="position: end;">
+                                    <button class="btn btn-danger  position-end dropdown-toggle" id="notifDropdownBtn">
+                                        <i class="bi bi-bell"></i>
+                                        @if ($totalUnread > 0)
+                                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning">
+                                                @if (Auth::user()->role == 'ceo')
+                                                    {{$notif_ceo->where('status_ceo', 0)->count()}}
+                                                @else
+                                                    {{ $notif_marketing->where('status_marketing', 0)->count() }}
+                                                @endif
+                                            </span>
+                                        @endif
+                                    </button>
+                
+                                    <!-- Dropdown menu -->
+                                    <div id="notifDropdownMenu" class="dropdown-menu p-3 shadow" style="width: 350px; display: none; position: absolute; right: 0; z-index: 999;">
+                                        <!-- Form Marketing -->
+                                        @if (Auth::user()->role == 'ceo')
+                                        <form method="POST" action="{{ route('notif.ceo.action') }}">
+                                            @csrf
+                                            <strong>CEO</strong>
+                                            @forelse ($notif_ceo as $nmr)
+                                                <div class="d-flex mb-2">
+                                                    <input type="checkbox" class="form-check-input me-2" name="notif_ids[]" value="{{ $nmr->id }}">
+                                                    <div class="{{ $nmr->status_ceo == 1 ? 'text-muted' : '' }}">
+                                                        <strong>{{ $nmr->title }}</strong><br>
+                                                        <small>{{ $nmr->content }}</small>
+                                                    </div>
+                                                </div>
+                                            @empty
+                                                <p class="text-muted">Tidak ada notifikasi CEO.</p>
+                                            @endforelse
+                                            <div class="d-flex gap-1 mt-2">
+                                                <button type="submit" name="action" value="read" class="btn btn-sm btn-outline-success">Tandai Dibaca</button>
+                                                <button type="submit" name="action" value="delete" class="btn btn-sm btn-outline-danger">Hapus</button>
+                                            </div>
+                                        </form>
+                                        @else
+                                        <form method="POST" action="{{ route('notif.marketing.action') }}">
+                                            @csrf
+                                            <strong>Marketing</strong>
+                                            @forelse ($notif_marketing as $nmr)
+                                                <div class="d-flex mb-2">
+                                                    <input type="checkbox" class="form-check-input me-2" name="notif_ids[]" value="{{ $nmr->id }}">
+                                                    <div class="{{ $nmr->status_marketing == 1 ? 'text-muted' : '' }}">
+                                                        <strong>{{ $nmr->title }}</strong><br>
+                                                        <small>{{ $nmr->content }}</small>
+                                                    </div>
+                                                </div>
+                                            @empty
+                                                <p class="text-muted">Tidak ada notifikasi marketing.</p>
+                                            @endforelse
+                                            <div class="d-flex gap-1 mt-2">
+                                                <button type="submit" name="action" value="read" class="btn btn-sm btn-outline-success">Tandai Dibaca</button>
+                                                <button type="submit" name="action" value="delete" class="btn btn-sm btn-outline-danger">Hapus</button>
+                                            </div>
+                                        </form>
+
+                                        @endif
+                
+                                        <!-- Form CEO -->
+                                        
+                                    </div>
+                                </div>
+                            </li>
+
+                            <!-- Script dropdown toggle -->
+                            <script>
+                                const notifBtn = document.getElementById('notifDropdownBtn');
+                                const notifMenu = document.getElementById('notifDropdownMenu');
+
+                                notifBtn.addEventListener('click', function (e) {
+                                    e.stopPropagation(); // prevent click from bubbling
+                                    notifMenu.style.display = notifMenu.style.display === 'block' ? 'none' : 'block';
+                                });
+
+                                // Click outside to close
+                                document.addEventListener('click', function (event) {
+                                    if (!notifMenu.contains(event.target) && !notifBtn.contains(event.target)) {
+                                        notifMenu.style.display = 'none';
+                                    }
+                                });
+                            </script>
+                            
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                     data-bs-toggle="dropdown" aria-expanded="false">

@@ -32,6 +32,9 @@ Route::redirect('/', '/login');
 // Route::post('/register', [RegisterController::class, 'register']);
 
 Route::middleware(['auth'])->group(function () {
+    Route::post('/notif/marketing/action', [DashboardController::class, 'handleMarketing'])->name('notif.marketing.action');
+    Route::post('/notif/ceo/action', [DashboardController::class, 'handleCeo'])->name('notif.ceo.action');
+
     Route::controller(MailController::class)->prefix('mail')->name('mail.')->group(function () {
         Route::get('/', 'index')->name('inbox');
     });

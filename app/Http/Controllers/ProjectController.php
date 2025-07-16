@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\SendPjctRm;
+use App\Jobs\SendProjectReminder;
 use App\Mail\ImmediateMail;
 use App\Mail\ScheduledMail;
+use App\Models\NotificationM;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Project;
@@ -234,18 +237,18 @@ class ProjectController extends Controller
     // Kirim email langsung ke user
     Mail::to($user->email)->send(new ImmediateMail($project, $user, $isCEO));
 
-    // Kirim email terjadwal ke user
+    // // Kirim email terjadwal ke user
     $scheduledDate = Carbon::parse($project->end_date)->subDay(); 
 
-    Mail::to($user->email)
-        ->later(now()->addMinutes(1), new ScheduledMail($project, $user, $isCEO));
+    // Mail::to($user->email)
+    //     ->later(now()->addMinutes(1), new ScheduledMail($project, $user, $isCEO));
     //kalo tar mau nyobain demo, jeda waktu 1 menit nyalain 2 baris atas
     
     // Kirim email satu hari sebelum deadline nah kalo gini tar si email yang remindernya kekirim  1 hari sebelum end date
     Mail::to($user->email)
         ->later($scheduledDate, new ScheduledMail($project, $user, $isCEO)); //yang ini matiin
 
-    // Kirim email ke semua CEO
+    // // Kirim email ke semua CEO
     $ceos = User::where('role', 'ceo')->get();
     foreach ($ceos as $ceoUser) {
         $user = User::find($ceoUser->id);
@@ -254,6 +257,24 @@ class ProjectController extends Controller
             ->later($scheduledDate, new ScheduledMail($project, $user, $isCEO));
     }
 
+        $notif = new NotificationM();
+        $notif->title = 'Project Baru telah ditambahkan '. $project->name;
+        $notif->content = 'Project telah ditambahkan oleh ' . Auth::user()->name;
+        $notif->status_ceo = 0;
+        $notif->status_marketing = 0;
+        $notif->user_id = Auth::user()->id;
+        $notif->projects_id = $project->id;
+        $notif->tasks_id = null;
+        $notif->save();
+
+        SendPjctRm::dispatch($notif->projects_id)->delay(
+            \Carbon\Carbon::parse($project->end_date)->subDay()
+        );
+        // dd($project);
+        // SendPjctRm::dispatch($notif->projects_id)->delay(now()->addMinutes(1));
+        // $project = Project::find($notif->projects_id);
+
+   
     if ($request->ajax()) {
         return response()->json([
             'success' => true,

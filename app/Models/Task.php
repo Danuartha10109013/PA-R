@@ -49,4 +49,9 @@ class Task extends Model
     {
         return $this->hasMany(ChecklistItem::class);
     }
+
+    protected $casts = [
+    'due_date' => 'date',
+];
+
 }

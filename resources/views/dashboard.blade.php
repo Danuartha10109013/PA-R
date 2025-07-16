@@ -118,16 +118,27 @@
         {{-- ==== CHART RANKING ==== --}}
         <div class="row mb-4">
             <div class="col-12">
-                <div class="card shadow-sm">
-                    <div class="card-header">
-                        <h5 class="card-title m-0">Ranking Konten</h5>
+                <div class="card shadow-sm border-success">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="card-title m-0">Kesimpulan Analisis Tahun {{ $selectedYear }}</h5>
                     </div>
-                    <div class="card-body" style="height: 400px;">
-                        <canvas id="topsisChart"></canvas>
+                    <div class="card-body">
+                        <ul class="mb-0" id="kesimpulanList" style="font-size: 16px;">
+                            <li><em>Kesimpulan sedang diproses...</em></li>
+                        </ul>
                     </div>
                 </div>
             </div>
         </div>
+
+
+
+<style>
+    #kesimpulanList li {
+        margin-bottom: 10px;
+    }
+</style>
+
     </div>
 @endsection
 
@@ -230,5 +241,39 @@
                 }
             }
         });
+
+        
     </script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const chartData = @json($chartData);
+        const monthlyData = @json($projectMonthlyChart);
+        const selectedYear = @json($selectedYear);
+        const kesimpulanList = document.getElementById('kesimpulanList');
+        kesimpulanList.innerHTML = ''; // Bersihkan loading item
+
+        // 1. Kesimpulan dari Ranking Konten (TOPSIS)
+        if (chartData.length > 0) {
+            const sortedContent = [...chartData].sort((a, b) => b.score - a.score);
+            const topContent = sortedContent[0];
+
+            const kontenKesimpulan = `📌 <strong>${topContent.name}</strong> menjadi <strong>konten terpopuler</strong> berdasarkan evaluasi TOPSIS tahun <strong>${selectedYear}</strong>.`;
+            kesimpulanList.innerHTML += `<li>${kontenKesimpulan}</li>`;
+        } else {
+            kesimpulanList.innerHTML += `<li>📌 Tidak ada data konten untuk tahun ${selectedYear}.</li>`;
+        }
+
+        // 2. Kesimpulan dari Jumlah Proyek per Bulan
+        if (monthlyData.length > 0) {
+            const sortedMonth = [...monthlyData].sort((a, b) => b.total - a.total);
+            const topMonth = sortedMonth[0];
+
+            const proyekKesimpulan = `📈 Bulan <strong>${topMonth.month}</strong> merupakan bulan dengan <strong>jumlah proyek terbanyak</strong> yaitu <strong>${topMonth.total}</strong> proyek pada tahun <strong>${selectedYear}</strong>.`;
+            kesimpulanList.innerHTML += `<li>${proyekKesimpulan}</li>`;
+        } else {
+            kesimpulanList.innerHTML += `<li>📈 Tidak ada data proyek untuk tahun ${selectedYear}.</li>`;
+        }
+    });
+</script>
+
 @endpush
