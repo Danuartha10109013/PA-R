@@ -16,11 +16,112 @@ class ContentController extends Controller
     //     return view('content.index', compact('popularContent', 'allContent'));
     // }
 
-    public function index()
+//     public function index()
+// {
+//     //ini yang buat spk disini semua , ga pake lagi yang di folder Algorithms
+//     // 1. Ambil 3 konten terakhir sesuai file
+//     $contents = \App\Models\Content::orderBy('created_at', 'desc')->get();
+
+//     // 2. Bangun matriks keputusan
+//     $data = [];
+//     foreach ($contents as $content) {
+//         $data[] = [
+//             'id' => $content->id,
+//             'title' => $content->title,
+//             'likes' => $content->likes,
+//             'comments' => $content->comments,
+//             'views' => $content->views,
+//         ];
+//     }
+
+//     // Ambil semua nilai dari masing-masing kriteria
+//     $likes = array_column($data, 'likes');
+//     $comments = array_column($data, 'comments');
+//     $views = array_column($data, 'views');
+
+//     // 3. Normalisasi vektor
+//     $normLikes = sqrt(array_sum(array_map(fn($v) => $v ** 2, $likes)));
+//     $normComments = sqrt(array_sum(array_map(fn($v) => $v ** 2, $comments)));
+//     $normViews = sqrt(array_sum(array_map(fn($v) => $v ** 2, $views)));
+
+//     // 4. Normalisasi dan pembobotan
+//     $weights = [
+//         'likes' => 3.5,
+//         'comments' => 2.5,
+//         'views' => 4.0,
+//     ];
+
+//     $topsis = [];
+//     foreach ($data as $d) {
+//         $norm = [
+//             'likes' => ($d['likes'] / $normLikes) * $weights['likes'],
+//             'comments' => ($d['comments'] / $normComments) * $weights['comments'],
+//             'views' => ($d['views'] / $normViews) * $weights['views'],
+//         ];
+//         $topsis[] = array_merge($d, $norm);
+//     }
+
+//     // 5. Solusi ideal positif (maks untuk benefit, min untuk cost)
+//     $vPos = [
+//         'likes' => max(array_column($topsis, 'likes')),
+//         'comments' => min(array_column($topsis, 'comments')), // cost
+//         'views' => max(array_column($topsis, 'views')),
+//     ];
+
+//     $vNeg = [
+//         'likes' => min(array_column($topsis, 'likes')),
+//         'comments' => max(array_column($topsis, 'comments')), // cost
+//         'views' => min(array_column($topsis, 'views')),
+//     ];
+
+//     // 6. Hitung jarak ke solusi ideal positif dan negatif
+//     foreach ($topsis as &$alt) {
+//         $dPlus = sqrt(
+//             pow($alt['likes'] - $vPos['likes'], 2) +
+//             pow($alt['comments'] - $vPos['comments'], 2) +
+//             pow($alt['views'] - $vPos['views'], 2)
+//         );
+//         $dMinus = sqrt(
+//             pow($alt['likes'] - $vNeg['likes'], 2) +
+//             pow($alt['comments'] - $vNeg['comments'], 2) +
+//             pow($alt['views'] - $vNeg['views'], 2)
+//         );
+//         $alt['d_plus'] = $dPlus;
+//         $alt['d_minus'] = $dMinus;
+//         $alt['score'] = $dMinus / ($dPlus + $dMinus); // Closeness Coefficient
+//     }
+
+//     // 7. Urutkan berdasarkan nilai preferensi tertinggi
+//     usort($topsis, fn($a, $b) => $b['score'] <=> $a['score']);
+
+//     // Pagination all content (optional)
+//     $allContent = \App\Models\Content::orderBy('created_at', 'desc')->paginate(15);
+//     // dd($topsis);
+//     foreach ($topsis as &$item) {
+//         $model = Content::find($item['id']);
+//         $model->score = $item['score'];
+//         $model->d_plus = $item['d_plus'];
+//         $model->d_minus = $item['d_minus'];
+//         $item = $model;
+//     }
+//     return view('content.index', [
+//         'popularContent' => $topsis,
+//         'allContent' => $allContent,
+//     ]);
+// }
+
+public function index()
 {
-    //ini yang buat spk disini semua , ga pake lagi yang di folder Algorithms
-    // 1. Ambil 3 konten terakhir sesuai file
+    // Ambil semua konten, bisa difilter jadi 3 terakhir jika perlu
     $contents = \App\Models\Content::orderBy('created_at', 'desc')->get();
+
+    // Jika data kosong, langsung kembalikan view dengan data kosong
+    if ($contents->isEmpty()) {
+        return view('content.index', [
+            'popularContent' => [],
+            'allContent' => [],
+        ]);
+    }
 
     // 2. Bangun matriks keputusan
     $data = [];
@@ -40,9 +141,9 @@ class ContentController extends Controller
     $views = array_column($data, 'views');
 
     // 3. Normalisasi vektor
-    $normLikes = sqrt(array_sum(array_map(fn($v) => $v ** 2, $likes)));
-    $normComments = sqrt(array_sum(array_map(fn($v) => $v ** 2, $comments)));
-    $normViews = sqrt(array_sum(array_map(fn($v) => $v ** 2, $views)));
+    $normLikes = sqrt(array_sum(array_map(fn($v) => $v ** 2, $likes))) ?: 1;
+    $normComments = sqrt(array_sum(array_map(fn($v) => $v ** 2, $comments))) ?: 1;
+    $normViews = sqrt(array_sum(array_map(fn($v) => $v ** 2, $views))) ?: 1;
 
     // 4. Normalisasi dan pembobotan
     $weights = [
@@ -61,7 +162,7 @@ class ContentController extends Controller
         $topsis[] = array_merge($d, $norm);
     }
 
-    // 5. Solusi ideal positif (maks untuk benefit, min untuk cost)
+    // 5. Solusi ideal positif dan negatif
     $vPos = [
         'likes' => max(array_column($topsis, 'likes')),
         'comments' => min(array_column($topsis, 'comments')), // cost
@@ -88,15 +189,16 @@ class ContentController extends Controller
         );
         $alt['d_plus'] = $dPlus;
         $alt['d_minus'] = $dMinus;
-        $alt['score'] = $dMinus / ($dPlus + $dMinus); // Closeness Coefficient
+        $alt['score'] = ($dPlus + $dMinus) > 0 ? $dMinus / ($dPlus + $dMinus) : 0;
     }
 
     // 7. Urutkan berdasarkan nilai preferensi tertinggi
     usort($topsis, fn($a, $b) => $b['score'] <=> $a['score']);
 
-    // Pagination all content (optional)
+    // Pagination untuk semua konten
     $allContent = \App\Models\Content::orderBy('created_at', 'desc')->paginate(15);
-    // dd($topsis);
+
+    // Ambil model ulang berdasarkan ID
     foreach ($topsis as &$item) {
         $model = Content::find($item['id']);
         $model->score = $item['score'];
@@ -104,6 +206,7 @@ class ContentController extends Controller
         $model->d_minus = $item['d_minus'];
         $item = $model;
     }
+
     return view('content.index', [
         'popularContent' => $topsis,
         'allContent' => $allContent,
