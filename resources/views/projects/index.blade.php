@@ -45,12 +45,11 @@
                 <form method="GET" action="{{ route('projects.index') }}">
                     <select name="status" class="form-select" onchange="this.form.submit()">
                         <option value="all">Semua Status</option>
-                        <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
-                        <option value="on_going" {{ request('status') == 'on_going' ? 'selected' : '' }}>In Progress
+                        <option value="not_started" {{ request('status') == 'not_started' ? 'selected' : '' }}>Pending</option>
+                        <option value="in_progress" {{ request('status') == 'in_progress' ? 'selected' : '' }}>In Progress
                         </option>
-                        <option value="unfinished" {{ request('status') == 'unfinished' ? 'selected' : '' }}>Unfinished
-                        </option>
-                        <option value="finished" {{ request('status') == 'finished' ? 'selected' : '' }}>Completed</option>
+                        
+                        <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>Completed</option>
                     </select>
                 </form>
 
@@ -80,9 +79,22 @@
                             <p class="card-text">{{ $project->description }}</p>
                             <p class="card-text">
                                 <strong>Status:</strong>
-                                {{ $project->status === 'pending' ? 'Pending' : ($project->status === 'on_going' ? 'In Progress' : ($project->status === 'unfinished' ? 'Unfinished' : ($project->status === 'finished' ? 'Completed' : 'Unknown'))) }} <br>
+                                {{-- {{ $project->status == 'not_started' ? 'Pending' : ($project->status == 'in_progres' ? 'In Progress' : ($project->status == 'unfinished' ? 'Unfinished' : ($project->status == 'completed' ? 'Completed' : 'Unknown'))) }} <br> --}}
+                                @php
+                                    $sts = \App\Models\Project::find($project->id)->value('status');
+                                    // dd($sts);
+                                    $statusMap = [
+                                        'not_started' => ['label' => 'Pending', 'class' => 'secondary', 'icon' => 'bi-clock'],
+                                        'in_progress' => ['label' => 'On Going', 'class' => 'warning text-dark', 'icon' => 'bi-arrow-repeat'],
+                                        'completed' => ['label' => 'Completed', 'class' => 'success', 'icon' => 'bi-check-circle'],
+                                    ];
 
-                                {{-- {{ $project->status == 'pending' ? 'Pending' : ($project->status == 'on_going' ? 'In Progress' : 'Completed') }}<br> --}}
+                                    $status = $statusMap[$sts] ?? ['label' => 'Unknown', 'class' => 'dark', 'icon' => 'bi-question-circle'];
+                                @endphp
+
+                                <span class="badge bg-{{ $status['class'] }}">
+                                    <i class="bi {{ $status['icon'] }}"></i> {{ $status['label'] }}
+                                </span> <br>
                                 <strong>Deadline:</strong>
                                 @if ($project->end_date && $project->end_date->isFuture())
                                     {{ $project->end_date->diffForHumans() }}
