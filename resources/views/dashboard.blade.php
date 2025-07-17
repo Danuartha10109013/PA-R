@@ -113,7 +113,19 @@
                 </div>
             </div>
         </div>
-
+ {{-- ==== CHART RANKING ==== --}}
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card shadow-sm">
+                    <div class="card-header">
+                        <h5 class="card-title m-0">Ranking Konten</h5>
+                    </div>
+                    <div class="card-body" style="height: 400px;">
+                        <canvas id="topsisChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         {{-- ==== CHART RANKING ==== --}}
         <div class="row mb-4">
