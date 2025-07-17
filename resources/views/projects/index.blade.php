@@ -81,7 +81,7 @@
                                 <strong>Status:</strong>
                                 {{-- {{ $project->status == 'not_started' ? 'Pending' : ($project->status == 'in_progres' ? 'In Progress' : ($project->status == 'unfinished' ? 'Unfinished' : ($project->status == 'completed' ? 'Completed' : 'Unknown'))) }} <br> --}}
                                 @php
-                                    $sts = \App\Models\Project::find($project->id)->value('status');
+                                    // $sts = \App\Models\Project::find($project->id)->value('status');
                                     // dd($sts);
                                     $statusMap = [
                                         'not_started' => ['label' => 'Pending', 'class' => 'secondary', 'icon' => 'bi-clock'],
@@ -89,7 +89,7 @@
                                         'completed' => ['label' => 'Completed', 'class' => 'success', 'icon' => 'bi-check-circle'],
                                     ];
 
-                                    $status = $statusMap[$sts] ?? ['label' => 'Unknown', 'class' => 'dark', 'icon' => 'bi-question-circle'];
+                                    $status = $statusMap[$project->status] ?? ['label' => 'Unknown', 'class' => 'dark', 'icon' => 'bi-question-circle'];
                                 @endphp
 
                                 <span class="badge bg-{{ $status['class'] }}">
