@@ -12,26 +12,26 @@
             </div>
 
             {{-- Pending --}}
-            <div class="col-md-3 col-sm-6 mb-3">
+            <div class="col-md-4 col-sm-6 mb-3">
                 <div class="card text-bg-warning shadow-sm h-100">
                     <div class="card-body text-center">
-                        <h6 class="card-title">Pending</h6>
-                        <h2 class="fw-bold">{{ $projectStatusCounts['pending'] ?? 0 }}</h2>
+                        <h6 class="card-title">Not Started</h6>
+                        <h2 class="fw-bold">{{ $projectStatusCounts['not_started'] ?? 0 }}</h2>
                     </div>
                 </div>
             </div>
 
             {{-- On Going --}}
-            <div class="col-md-3 col-sm-6 mb-3">
+            <div class="col-md-4 col-sm-6 mb-3">
                 <div class="card text-bg-info shadow-sm h-100">
                     <div class="card-body text-center">
                         <h6 class="card-title">In Progress</h6>
-                        <h2 class="fw-bold">{{ $projectStatusCounts['on_going'] ?? 0 }}</h2>
+                        <h2 class="fw-bold">{{ $projectStatusCounts['in_progress'] ?? 0 }}</h2>
                     </div>
                 </div>
             </div>
 
-            {{-- Unfinished --}}
+            {{-- Unfinished
             <div class="col-md-3 col-sm-6 mb-3">
                 <div class="card text-bg-danger shadow-sm h-100">
                     <div class="card-body text-center">
@@ -39,14 +39,14 @@
                         <h2 class="fw-bold">{{ $projectStatusCounts['unfinished'] ?? 0 }}</h2>
                     </div>
                 </div>
-            </div>
+            </div> --}}
 
             {{-- Finished --}}
-            <div class="col-md-3 col-sm-6 mb-3">
+            <div class="col-md-4 col-sm-6 mb-3">
                 <div class="card text-bg-success shadow-sm h-100">
                     <div class="card-body text-center">
                         <h6 class="card-title">Completed</h6>
-                        <h2 class="fw-bold">{{ $projectStatusCounts['finished'] ?? 0 }}</h2>
+                        <h2 class="fw-bold">{{ $projectStatusCounts['completed'] ?? 0 }}</h2>
                     </div>
                 </div>
             </div>
