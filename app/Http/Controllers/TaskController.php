@@ -61,7 +61,7 @@ class TaskController extends Controller
         $task = $project->tasks()->create($data);
 
         $pj = Project::find($task->project_id);
-        if($pj && $pj->status == 'not_started'){
+        if($pj){
             $pj->status = 'in_progress';
             $pj->save();
         }
@@ -148,7 +148,7 @@ class TaskController extends Controller
         $totaltask = $alltask->count();
         $totaltaskdone = Task::where('project_id', $pj)->where('done', 1)->count();
 
-        if ($totaltask > 0 && $totaltask == $totaltaskdone && $task->status == 'publikasi') {
+        if ($totaltask > 0 && $totaltask == $totaltaskdone) {
             $project = Project::find($pj);
             if ($project) {
                 $project->status = 'completed';
