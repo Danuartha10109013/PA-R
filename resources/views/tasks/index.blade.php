@@ -113,6 +113,34 @@
                                 <a href="{{ route('tasks.show', $task->id) }}" class="btn btn-success btn-sm">
                                     <i class="bi bi-eye"></i>
                                 </a>
+                                @if ($task->done == 0)
+                                    <!-- Tombol untuk membuka modal -->
+                                    <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#confirmDoneModal{{ $task->id }}">
+                                        <i class="bi bi-check"></i>
+                                    </a>
+
+                                    <!-- Modal Konfirmasi -->
+                                    <div class="modal fade" id="confirmDoneModal{{ $task->id }}" tabindex="-1" aria-labelledby="confirmDoneModalLabel{{ $task->id }}" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="confirmDoneModalLabel{{ $task->id }}">Konfirmasi</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    Apakah Anda ingin menandai task ini sebagai selesai?
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                                    <a href="{{ route('tasks.done', ['task' => $task->id, 'pj' => $project->id]) }}" class="btn btn-primary">Ya, Tandai Selesai</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @else
+                                    <a class="btn btn-primary">Completed</a>
+                                @endif
+
                             </div>
                         </div>
                     @endforeach
@@ -137,6 +165,33 @@
                                 <a href="{{ route('tasks.show', $task->id) }}" class="btn btn-primary btn-sm">
                                     <i class="bi bi-eye"></i>
                                 </a>
+                                @if ($task->done == 0)
+                                    <!-- Tombol untuk membuka modal -->
+                                    <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#confirmDoneModal{{ $task->id }}">
+                                        <i class="bi bi-check"></i>
+                                    </a>
+
+                                    <!-- Modal Konfirmasi -->
+                                    <div class="modal fade" id="confirmDoneModal{{ $task->id }}" tabindex="-1" aria-labelledby="confirmDoneModalLabel{{ $task->id }}" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="confirmDoneModalLabel{{ $task->id }}">Konfirmasi</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    Apakah Anda ingin menandai task ini sebagai selesai?
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                                    <a href="{{ route('tasks.done', ['task' => $task->id, 'pj' => $project->id]) }}" class="btn btn-primary">Ya, Tandai Selesai</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @else
+                                    <a class="btn btn-primary">Completed</a>
+                                @endif
                             </div>
                         </div>
                     @endforeach
@@ -161,6 +216,33 @@
                                 <a href="{{ route('tasks.show', $task->id) }}" class="btn btn-info btn-sm">
                                     <i class="bi bi-eye"></i>
                                 </a>
+                                @if ($task->done == 0)
+                                    <!-- Tombol untuk membuka modal -->
+                                    <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#confirmDoneModal{{ $task->id }}">
+                                        <i class="bi bi-check"></i>
+                                    </a>
+
+                                    <!-- Modal Konfirmasi -->
+                                    <div class="modal fade" id="confirmDoneModal{{ $task->id }}" tabindex="-1" aria-labelledby="confirmDoneModalLabel{{ $task->id }}" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="confirmDoneModalLabel{{ $task->id }}">Konfirmasi</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    Apakah Anda ingin menandai task ini sebagai selesai?
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                                    <a href="{{ route('tasks.done', ['task' => $task->id, 'pj' => $project->id]) }}" class="btn btn-primary">Ya, Tandai Selesai</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @else
+                                    <a class="btn btn-primary">Completed</a>
+                                @endif
                             </div>
                         </div>
                     @endforeach
@@ -185,6 +267,33 @@
                                 <a href="{{ route('tasks.show', $task->id) }}" class="btn btn-warning btn-sm">
                                     <i class="bi bi-eye"></i>
                                 </a>
+                                @if ($task->done == 0)
+                                    <!-- Tombol untuk membuka modal -->
+                                    <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#confirmDoneModal{{ $task->id }}">
+                                        <i class="bi bi-check"></i>
+                                    </a>
+
+                                    <!-- Modal Konfirmasi -->
+                                    <div class="modal fade" id="confirmDoneModal{{ $task->id }}" tabindex="-1" aria-labelledby="confirmDoneModalLabel{{ $task->id }}" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="confirmDoneModalLabel{{ $task->id }}">Konfirmasi</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    Apakah Anda ingin menandai task ini sebagai selesai?
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                                    <a href="{{ route('tasks.done', ['task' => $task->id, 'pj' => $project->id]) }}" class="btn btn-primary">Ya, Tandai Selesai</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @else
+                                    <a class="btn btn-primary">Completed</a>
+                                @endif
                             </div>
                         </div>
                     @endforeach
@@ -209,6 +318,33 @@
                                 <a href="{{ route('tasks.show', $task->id) }}" class="btn btn-danger btn-sm">
                                     <i class="bi bi-eye"></i>
                                 </a>
+                                @if ($task->done == 0)
+                                    <!-- Tombol untuk membuka modal -->
+                                    <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#confirmDoneModal{{ $task->id }}">
+                                        <i class="bi bi-check"></i>
+                                    </a>
+
+                                    <!-- Modal Konfirmasi -->
+                                    <div class="modal fade" id="confirmDoneModal{{ $task->id }}" tabindex="-1" aria-labelledby="confirmDoneModalLabel{{ $task->id }}" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="confirmDoneModalLabel{{ $task->id }}">Konfirmasi</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    Apakah Anda ingin menandai task ini sebagai selesai?
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                                    <a href="{{ route('tasks.done', ['task' => $task->id, 'pj' => $project->id]) }}" class="btn btn-primary">Ya, Tandai Selesai</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @else
+                                    <a class="btn btn-primary">Completed</a>
+                                @endif
                             </div>
                         </div>
                     @endforeach

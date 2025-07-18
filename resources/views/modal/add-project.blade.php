@@ -30,7 +30,8 @@
                 <span class="text-danger">{{ $message }}</span>
             @enderror
         </div>
-        <div class="mb-3">
+        <input type="hidden" name="status" value="not_started" id="">
+        {{-- <div class="mb-3">
             <label for="create_status" class="form-label">Status</label>
             <select name="status" id="create_status" class="form-select" required>
                 <option value="not_started">Not Started</option>
@@ -40,7 +41,7 @@
             @error('status')
                 <span class="text-danger">{{ $message }}</span>
             @enderror
-        </div>
+        </div> --}}
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

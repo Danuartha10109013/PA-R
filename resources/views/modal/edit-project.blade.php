@@ -30,7 +30,7 @@
                 <span class="text-danger">{{ $message }}</span>
             @enderror
         </div>
-        <div class="mb-3">
+        <div class="mb-3" style="display: none">
             <label for="edit_status" class="form-label">Status</label>
             <select name="status" id="edit_status" class="form-select" required>
                 <option value="not_started">Not Started</option>

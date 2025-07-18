@@ -60,6 +60,12 @@ class TaskController extends Controller
         
         $task = $project->tasks()->create($data);
 
+        $pj = Project::find($task->project_id);
+        if($pj && $pj->status == 'not_started'){
+            $pj->status = 'in_progress';
+            $pj->save();
+        }
+
         $notif = new NotificationM();
         $notif->title = 'Task Baru telah ditambahkan '. $request->title;
         $notif->content = 'Task telah ditambahkan oleh ' . Auth::user()->name . 'dengan deadline pada ' . $request->due_date;
@@ -130,5 +136,27 @@ class TaskController extends Controller
         $task->save();
 
         return response()->json(['message' => 'Task status updated successfully.']);
+    }
+
+    public function done($id,$pj){
+        $task = Task::find($id);
+        if($task){
+            $task->done = 1;
+            $task->save();
+        }
+        $alltask = Task::where('project_id', $pj)->get();
+        $totaltask = $alltask->count();
+        $totaltaskdone = Task::where('project_id', $pj)->where('done', 1)->count();
+
+        if ($totaltask > 0 && $totaltask == $totaltaskdone && $task->status == 'publikasi') {
+            $project = Project::find($pj);
+            if ($project) {
+                $project->status = 'completed';
+                $project->save();
+            }
+        }
+
+        return redirect()->back()->with('success', 'task telah disetujui sebagai selesai');
+
     }
 }

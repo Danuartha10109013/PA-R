@@ -45,6 +45,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('tasks/{task}', [TaskController::class, 'show'])->name('tasks.show');
     Route::put('tasks/{task}', [TaskController::class, 'update'])->name('tasks.update');
+    Route::get('tasks/done/{task}/{pj}', [TaskController::class, 'done'])->name('tasks.done');
     Route::post('tasks/{task}/update-status', [TaskController::class, 'updateStatus']);
 
     Route::resource('routines', RoutineController::class)->except(['show']);

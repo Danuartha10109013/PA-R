@@ -33,6 +33,7 @@
                                         <span class="badge bg-warning">Review</span>
                                     @endif
                                 </p>
+                                <p class="card-text"><strong>Status Pengerjaan : </strong> {{$task->done == 0 ? 'In_progres' : 'Completed'}}</p>
 
                                 <!-- <p class="card-text"><strong>Assign To:</strong> {{ $task->user->name }}</p> -->
 
