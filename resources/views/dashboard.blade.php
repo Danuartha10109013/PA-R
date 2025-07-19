@@ -98,6 +98,15 @@
                         @endfor
                     </select>
                 </div>
+                <div class="col-md-3">
+                    <label for="month" class="form-label">Pilih Bulan</label>
+                    <select name="month" id="month" class="form-select" onchange="this.form.submit()">
+                        <option value="all" {{ request('month', 'all') == 'all' ? 'selected' : '' }}>Semua Bulan</option>
+                        @foreach ([1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April', 5 => 'Mei', 6 => 'Juni', 7 => 'Juli', 8 => 'Agustus', 9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember'] as $num => $name)
+                            <option value="{{ $num }}" {{ request('month', 'all') == $num ? 'selected' : '' }}>{{ $name }}</option>
+                        @endforeach
+                    </select>
+                </div>
             </div>
         </form>
 
@@ -105,7 +114,11 @@
             <div class="col-12">
                 <div class="card shadow-sm">
                     <div class="card-header">
-                        <h5 class="card-title m-0">Jumlah Proyek Tahun {{ $selectedYear }}</h5>
+                        <h5 class="card-title m-0">Jumlah Proyek Tahun {{ $selectedYear }}
+                            @if(request('month', 'all') != 'all')
+                                - Bulan {{ [1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April', 5 => 'Mei', 6 => 'Juni', 7 => 'Juli', 8 => 'Agustus', 9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember'][request('month')] ?? '' }}
+                            @endif
+                        </h5>
                     </div>
                     <div class="card-body" style="height: 400px;">
                         <canvas id="projectMonthlyChart"></canvas>
@@ -212,6 +225,7 @@
         // Function chart per bulan
         const monthlyCtx = document.getElementById('projectMonthlyChart').getContext('2d');
         const monthlyData = @json($projectMonthlyChart);
+        const selectedMonth = @json($selectedMonth);
 
         new Chart(monthlyCtx, {
             type: 'bar',
@@ -261,6 +275,7 @@
         const chartData = @json($chartData);
         const monthlyData = @json($projectMonthlyChart);
         const selectedYear = @json($selectedYear);
+        const selectedMonth = @json($selectedMonth);
         const kesimpulanList = document.getElementById('kesimpulanList');
         kesimpulanList.innerHTML = ''; // Bersihkan loading item
 
@@ -277,11 +292,17 @@
 
         // 2. Kesimpulan dari Jumlah Proyek per Bulan
         if (monthlyData.length > 0) {
-            const sortedMonth = [...monthlyData].sort((a, b) => b.total - a.total);
-            const topMonth = sortedMonth[0];
-
-            const proyekKesimpulan = `📈 Bulan <strong>${topMonth.month}</strong> merupakan bulan dengan <strong>jumlah proyek terbanyak</strong> yaitu <strong>${topMonth.total}</strong> proyek pada tahun <strong>${selectedYear}</strong>.`;
-            kesimpulanList.innerHTML += `<li>${proyekKesimpulan}</li>`;
+            if (selectedMonth !== 'all') {
+                const monthName = monthlyData[0]?.month || '';
+                const total = monthlyData[0]?.total || 0;
+                const proyekKesimpulan = `📈 Pada bulan <strong>${monthName}</strong> tahun <strong>${selectedYear}</strong> terdapat <strong>${total}</strong> proyek.`;
+                kesimpulanList.innerHTML += `<li>${proyekKesimpulan}</li>`;
+            } else {
+                const sortedMonth = [...monthlyData].sort((a, b) => b.total - a.total);
+                const topMonth = sortedMonth[0];
+                const proyekKesimpulan = `📈 Bulan <strong>${topMonth.month}</strong> merupakan bulan dengan <strong>jumlah proyek terbanyak</strong> yaitu <strong>${topMonth.total}</strong> proyek pada tahun <strong>${selectedYear}</strong>.`;
+                kesimpulanList.innerHTML += `<li>${proyekKesimpulan}</li>`;
+            }
         } else {
             kesimpulanList.innerHTML += `<li>📈 Tidak ada data proyek untuk tahun ${selectedYear}.</li>`;
         }

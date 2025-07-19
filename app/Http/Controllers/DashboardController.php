@@ -101,6 +101,7 @@ class DashboardController extends Controller
         })->sortByDesc('score')->values();
 
         $selectedYear = request('year', now()->year); // default tahun sekarang
+        $selectedMonth = request('month', 'all');
 
         $monthlyProjects = Project::selectRaw('MONTH(created_at) as month, COUNT(*) as total')
             ->whereYear('created_at', $selectedYear)
@@ -112,9 +113,16 @@ class DashboardController extends Controller
             return [
                 'month' => Carbon::create()->month($month)->locale('id')->isoFormat('MMMM'),
                 'total' => $monthlyProjects[$month] ?? 0,
+                'month_num' => $month,
             ];
         });
 
+        // Filter by month if selected
+        if ($selectedMonth !== 'all') {
+            $projectMonthlyChart = $projectMonthlyChart->filter(function ($item) use ($selectedMonth) {
+                return $item['month_num'] == $selectedMonth;
+            })->values();
+        }
 
         return view('dashboard', compact(
             'tasksCount',
@@ -128,7 +136,8 @@ class DashboardController extends Controller
             'chartData',
             'projectStatusCounts',
             'projectMonthlyChart',
-            'selectedYear'
+            'selectedYear',
+            'selectedMonth'
         ));
     }
 }
