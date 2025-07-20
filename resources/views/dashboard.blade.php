@@ -230,7 +230,7 @@
         new Chart(monthlyCtx, {
             type: 'bar',
             data: {
-                labels: monthlyData.map(item => item.month),
+                labels: monthlyData.map(item => selectedMonth === 'all' ? item.month : ` ${item.month}`),
                 datasets: [{
                     label: 'Jumlah Proyek',
                     data: monthlyData.map(item => item.total),
@@ -261,7 +261,7 @@
                     x: {
                         title: {
                             display: true,
-                            text: 'Bulan'
+                            text: selectedMonth === 'all' ? 'Bulan' : 'Tanggal'
                         }
                     }
                 }
@@ -293,9 +293,23 @@
         // 2. Kesimpulan dari Jumlah Proyek per Bulan
         if (monthlyData.length > 0) {
             if (selectedMonth !== 'all') {
-                const monthName = monthlyData[0]?.month || '';
-                const total = monthlyData[0]?.total || 0;
-                const proyekKesimpulan = `📈 Pada bulan <strong>${monthName}</strong> tahun <strong>${selectedYear}</strong> terdapat <strong>${total}</strong> proyek.`;
+                const sortedDays = [...monthlyData].sort((a, b) => b.total - a.total);
+                const topDay = sortedDays[0];
+                const monthNames = ['', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+                const monthName = monthNames[selectedMonth] || '';
+                
+                // Calculate total projects in the month
+                const totalProjectsInMonth = monthlyData.reduce((sum, item) => sum + item.total, 0);
+                const daysWithProjects = monthlyData.filter(item => item.total > 0).length;
+                
+                let proyekKesimpulan = `📈 Pada bulan <strong>${monthName}</strong> tahun <strong>${selectedYear}</strong> terdapat <strong>${totalProjectsInMonth}</strong> proyek total. `;
+                
+                if (topDay.total > 0) {
+                    proyekKesimpulan += `Tanggal <strong>${topDay.month}</strong> merupakan hari dengan <strong>jumlah proyek terbanyak</strong> yaitu <strong>${topDay.total}</strong> proyek. `;
+                }
+                
+                proyekKesimpulan += `Proyek tersebar di <strong>${daysWithProjects}</strong> hari dalam bulan tersebut.`;
+                
                 kesimpulanList.innerHTML += `<li>${proyekKesimpulan}</li>`;
             } else {
                 const sortedMonth = [...monthlyData].sort((a, b) => b.total - a.total);
@@ -304,7 +318,13 @@
                 kesimpulanList.innerHTML += `<li>${proyekKesimpulan}</li>`;
             }
         } else {
-            kesimpulanList.innerHTML += `<li>📈 Tidak ada data proyek untuk tahun ${selectedYear}.</li>`;
+            if (selectedMonth !== 'all') {
+                const monthNames = ['', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+                const monthName = monthNames[selectedMonth] || '';
+                kesimpulanList.innerHTML += `<li>📈 Tidak ada data proyek untuk bulan ${monthName} tahun ${selectedYear}.</li>`;
+            } else {
+                kesimpulanList.innerHTML += `<li>📈 Tidak ada data proyek untuk tahun ${selectedYear}.</li>`;
+            }
         }
     });
 </script>

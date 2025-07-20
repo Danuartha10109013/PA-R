@@ -103,25 +103,53 @@ class DashboardController extends Controller
         $selectedYear = request('year', now()->year); // default tahun sekarang
         $selectedMonth = request('month', 'all');
 
-        $monthlyProjects = Project::selectRaw('MONTH(created_at) as month, COUNT(*) as total')
-            ->whereYear('created_at', $selectedYear)
-            ->groupBy('month')
-            ->orderBy('month')
-            ->pluck('total', 'month');
+        if ($selectedMonth === 'all') {
+            // Show monthly data for the year
+            $monthlyProjects = Project::selectRaw('MONTH(created_at) as month, COUNT(*) as total')
+                ->whereYear('created_at', $selectedYear)
+                ->groupBy('month')
+                ->orderBy('month')
+                ->pluck('total', 'month');
 
-        $projectMonthlyChart = collect(range(1, 12))->map(function ($month) use ($monthlyProjects) {
-            return [
-                'month' => Carbon::create()->month($month)->locale('id')->isoFormat('MMMM'),
-                'total' => $monthlyProjects[$month] ?? 0,
-                'month_num' => $month,
-            ];
-        });
+            $projectMonthlyChart = collect(range(1, 12))->map(function ($month) use ($monthlyProjects) {
+                return [
+                    'month' => Carbon::create()->month($month)->locale('id')->isoFormat('MMMM'),
+                    'total' => $monthlyProjects[$month] ?? 0,
+                    'month_num' => $month,
+                    'type' => 'monthly'
+                ];
+            });
+        } else {
+            // Show daily data for the selected month
+            $daysInMonth = Carbon::create($selectedYear, $selectedMonth)->daysInMonth;
+            
+            // Build query based on user role
+            $query = Project::selectRaw('DAY(created_at) as day, COUNT(*) as total')
+                ->whereYear('created_at', $selectedYear)
+                ->whereMonth('created_at', $selectedMonth);
+            
+            // Filter by user role
+            if (!$user->isCeo()) {
+                $query->where(function ($q) use ($user) {
+                    $q->where('user_id', $user->id)
+                      ->orWhereHas('users', function ($subQ) use ($user) {
+                          $subQ->where('users.id', $user->id);
+                      });
+                });
+            }
+            
+            $dailyProjects = $query->groupBy('day')
+                ->orderBy('day')
+                ->pluck('total', 'day');
 
-        // Filter by month if selected
-        if ($selectedMonth !== 'all') {
-            $projectMonthlyChart = $projectMonthlyChart->filter(function ($item) use ($selectedMonth) {
-                return $item['month_num'] == $selectedMonth;
-            })->values();
+            $projectMonthlyChart = collect(range(1, $daysInMonth))->map(function ($day) use ($dailyProjects) {
+                return [
+                    'month' => $day, // Using 'month' key for consistency, but it's actually day
+                    'total' => $dailyProjects[$day] ?? 0,
+                    'month_num' => $day,
+                    'type' => 'daily'
+                ];
+            });
         }
 
         return view('dashboard', compact(
